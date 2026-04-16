@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#08091A"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="TravelTalk"/>
+<title>Travel Talk AI</title>
+
+<!-- ── App Icon (Canvas-generated, no external file needed) ── -->
+<script>
+(function(){
+  const S = 512, c = document.createElement('canvas');
+  c.width = c.height = S;
+  const g = c.getContext('2d');
+
+  // Background — deep navy radial
+  const bg = g.createRadialGradient(S*.45, S*.35, 0, S/2, S/2, S*.72);
+  bg.addColorStop(0, '#1A1F4E');
+  bg.addColorStop(1, '#08091A');
+  g.fillStyle = bg; g.beginPath();
+  g.roundRect(0, 0, S, S, S*.22); g.fill();
+
+  // Gold ring glow
+  g.shadowColor = '#D4A853'; g.shadowBlur = 40;
+  const ring = g.createLinearGradient(S*.2, S*.2, S*.8, S*.8);
+  ring.addColorStop(0, '#F0C96E'); ring.addColorStop(1, '#E8923A');
+  g.strokeStyle = ring; g.lineWidth = S*.028;
+  g.beginPath(); g.roundRect(S*.1, S*.1, S*.8, S*.8, S*.18); g.stroke();
+  g.shadowBlur = 0;
+
+  // ✈ Plane emoji rendered large
+  g.font = `${S*.42}px serif`;
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText('✈️', S/2, S*.46);
+
+  // "TT" wordmark below
+  g.font = `600 ${S*.11}px 'Arial', sans-serif`;
+  g.fillStyle = '#F0C96E';
+  g.letterSpacing = '4px';
+  g.fillText('TRAVELTALK', S/2, S*.82);
+
+  const dataURL = c.toDataURL('image/png');
+
+  // Favicon
+  const ico = document.createElement('link');
+  ico.rel = 'icon'; ico.type = 'image/png'; ico.href = dataURL;
+  document.head.appendChild(ico);
+
+  // Apple touch icon
+  const atc = document.createElement('link');
+  atc.rel = 'apple-touch-icon'; atc.href = dataURL;
+  document.head.appendChild(atc);
+
+  // PWA Manifest (injected as Blob URL)
+  const manifest = {
+    name: 'Travel Talk AI',
+    short_name: 'TravelTalk',
+    description: 'Context-aware multilingual travel companion with AI memory',
+    start_url: './',
+    display: 'standalone',
+    orientation: 'portrait',
+    background_color: '#08091A',
+    theme_color: '#08091A',
+    icons: [
+      { src: dataURL, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+    ]
+  };
+  const mBlob = new Blob([JSON.stringify(manifest)], {type:'application/manifest+json'});
+  const mLink = document.createElement('link');
+  mLink.rel = 'manifest'; mLink.href = URL.createObjectURL(mBlob);
+  document.head.appendChild(mLink);
+})();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+<style>
+:root {
+  --night: #08091A;
+  --deep: #0D0F28;
+  --panel: #121530;
+  --card: #181C3A;
+  --border: rgba(200,170,100,0.18);
+  --gold: #D4A853;
+  --gold-light: #F0C96E;
+  --gold-dim: rgba(212,168,83,0.15);
+  --amber: #E8923A;
+  --cream: #F5ECD7;
+  --muted: rgba(245,236,215,0.45);
+  --dim: rgba(245,236,215,0.25);
+  --glass: rgba(20,24,56,0.72);
+  --success: #4ECDC4;
+  --danger: #FF6B6B;
+  --r: 16px;
+  --r-sm: 10px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  height: 100%; overflow: hidden;
+  background: var(--night);
+  font-family: 'Sora', sans-serif;
+  color: var(--cream);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Background ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 0%, rgba(100,80,180,0.22) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 90% 100%, rgba(212,168,83,0.14) 0%, transparent 55%),
+    radial-gradient(ellipse 100% 80% at 50% 50%, var(--night) 0%, var(--deep) 100%);
+  pointer-events: none;
+}
+
+/* Stars */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    radial-gradient(1px 1px at 20% 15%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 60% 8%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 80% 25%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 5%, rgba(255,255,255,0.15) 0%, transparent 100%),
+    radial-gradient(1px 1px at 10% 40%, rgba(255,255,255,0.1) 0%, transparent 100%),
+    radial-gradient(1px 1px at 95% 60%, rgba(255,255,255,0.2) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+#app {
+  position: relative; z-index: 1;
+  height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column;
+  max-width: 480px; margin: 0 auto;
+}
+
+/* ── Header ── */
+header {
+  padding: 16px 20px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  background: rgba(8,9,26,0.6);
+  backdrop-filter: blur(20px);
+  flex-shrink: 0;
+}
+
+.logo {
+  display: flex; align-items: center; gap: 10px;
+}
+
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 4px 16px rgba(212,168,83,0.35);
+}
+
+.logo-text {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--cream);
+  letter-spacing: 0.02em;
+}
+
+.logo-text span { color: var(--gold); font-style: italic; }
+
+.header-right {
+  display: flex; gap: 8px;
+}
+
+.icon-btn {
+  width: 36px; height: 36px;
+  background: var(--gold-dim);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s;
+  font-size: 16px; color: var(--gold);
+}
+
+.icon-btn:hover, .icon-btn.active { background: rgba(212,168,83,0.25); border-color: var(--gold); }
+
+/* ── Nav ── */
+nav {
+  display: flex;
+  border-top: 1px solid var(--border);
+  background: rgba(8,9,26,0.85);
+  backdrop-filter: blur(20px);
+  flex-shrink: 0;
+  padding: 0 8px;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.nav-item {
+  flex: 1; padding: 10px 4px 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  cursor: pointer; transition: all 0.2s;
+  border-top: 2px solid transparent;
+  font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--dim);
+}
+
+.nav-item .nav-icon { font-size: 20px; }
+.nav-item.active { color: var(--gold); border-top-color: var(--gold); }
+
+/* ── Screens ── */
+.screen { display: none; flex: 1; overflow-y: auto; padding: 16px 16px 0; }
+.screen.active { display: flex; flex-direction: column; gap: 14px; }
+
+/* ── Context Bar ── */
+.context-bar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; transition: all 0.2s;
+}
+
+.context-bar:hover { border-color: var(--gold); }
+
+.ctx-icon { font-size: 20px; }
+
+.ctx-info { flex: 1; }
+.ctx-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+.ctx-value { font-size: 13px; font-weight: 500; color: var(--cream); margin-top: 1px; }
+
+.ctx-badge {
+  background: var(--gold-dim); border: 1px solid var(--border);
+  padding: 3px 8px; border-radius: 20px;
+  font-size: 11px; color: var(--gold);
+}
+
+/* ── Lang Selector ── */
+.lang-strip {
+  display: flex; gap: 8px; align-items: center;
+}
+
+.lang-select {
+  flex: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  color: var(--cream);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.lang-select:focus { border-color: var(--gold); }
+
+.swap-btn {
+  width: 40px; height: 40px;
+  background: var(--gold-dim); border: 1px solid var(--border);
+  border-radius: var(--r-sm); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--gold);
+  transition: all 0.2s; flex-shrink: 0;
+}
+
+.swap-btn:hover { background: rgba(212,168,83,0.3); transform: rotate(180deg); }
+
+/* ── Input Area ── */
+.input-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.input-card:focus-within { border-color: rgba(212,168,83,0.4); }
+
+.input-label {
+  padding: 10px 14px 0;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--muted);
+}
+
+textarea {
+  width: 100%; min-height: 90px;
+  background: transparent; border: none; outline: none;
+  padding: 8px 14px 12px;
+  color: var(--cream); font-family: 'Sora', sans-serif;
+  font-size: 15px; line-height: 1.6; resize: none;
+}
+
+textarea::placeholder { color: var(--dim); }
+
+.input-actions {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  background: rgba(12,14,32,0.4);
+}
+
+.voice-btn {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: var(--gold-dim); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s;
+  font-size: 16px; color: var(--gold);
+}
+
+.voice-btn:hover { background: rgba(212,168,83,0.3); }
+.voice-btn.recording {
+  background: rgba(255,107,107,0.2); border-color: var(--danger);
+  color: var(--danger); animation: pulse-ring 1.2s ease infinite;
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(255,107,107,0.4); }
+  70% { box-shadow: 0 0 0 12px rgba(255,107,107,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,107,107,0); }
+}
+
+.char-count { font-size: 11px; color: var(--dim); margin-right: auto; }
+
+.translate-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: var(--r-sm);
+  background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
+  border: none; cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  font-size: 13px; font-weight: 600;
+  color: #1A0D00; letter-spacing: 0.02em;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(212,168,83,0.3);
+}
+
+.translate-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(212,168,83,0.4); }
+.translate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+/* ── Output Card ── */
+.output-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  overflow: hidden;
+  min-height: 100px;
+  position: relative;
+}
+
+.output-label {
+  padding: 10px 14px 0;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
+}
+
+.output-lang-badge {
+  background: var(--gold-dim); border: 1px solid var(--border);
+  padding: 2px 6px; border-radius: 4px;
+  font-size: 10px; color: var(--gold);
+}
+
+.output-text {
+  padding: 8px 14px 14px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem; line-height: 1.7;
+  color: var(--cream);
+  min-height: 60px;
+}
+
+.output-text.placeholder { font-style: italic; color: var(--dim); font-size: 1rem; }
+
+.output-text.loading {
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'Sora', sans-serif; font-size: 13px; color: var(--muted);
+}
+
+.dot-loader {
+  display: flex; gap: 4px; align-items: center;
+}
+
+.dot-loader span {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold);
+  animation: bounce 1.2s ease infinite;
+}
+
+.dot-loader span:nth-child(2) { animation-delay: 0.2s; }
+.dot-loader span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+.output-actions {
+  display: flex; gap: 8px; align-items: center;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+  background: rgba(12,14,32,0.4);
+}
+
+.act-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 6px 12px; border-radius: 6px;
+  background: var(--gold-dim); border: 1px solid var(--border);
+  font-family: 'Sora', sans-serif;
+  font-size: 11px; color: var(--gold-light);
+  cursor: pointer; transition: all 0.2s;
+}
+
+.act-btn:hover { background: rgba(212,168,83,0.25); }
+
+.save-badge {
+  margin-left: auto; font-size: 11px; color: var(--success);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* ── Memory Recall ── */
+.recall-card {
+  background: rgba(212,168,83,0.06);
+  border: 1px solid rgba(212,168,83,0.22);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  cursor: pointer; transition: all 0.2s;
+}
+
+.recall-card:hover { background: rgba(212,168,83,0.1); }
+
+.recall-header {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--gold); margin-bottom: 8px;
+}
+
+.recall-phrase {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; color: var(--cream);
+  margin-bottom: 4px;
+}
+
+.recall-meta {
+  font-size: 11px; color: var(--muted);
+  display: flex; gap: 10px;
+}
+
+/* ── Memory Screen ── */
+.search-bar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 12px;
+}
+
+.search-bar input {
+  flex: 1; background: transparent; border: none; outline: none;
+  padding: 12px 0;
+  color: var(--cream); font-family: 'Sora', sans-serif; font-size: 14px;
+}
+
+.search-bar input::placeholder { color: var(--dim); }
+.search-bar .s-icon { color: var(--muted); font-size: 16px; }
+
+.memory-list { display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
+
+.mem-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px;
+  transition: all 0.2s;
+  animation: slideUp 0.3s ease both;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.mem-card:hover { border-color: rgba(212,168,83,0.35); }
+
+.mem-top {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
+  margin-bottom: 8px;
+}
+
+.mem-original { font-size: 14px; color: var(--cream); line-height: 1.5; flex: 1; }
+
+.mem-lang-pill {
+  background: var(--gold-dim); border: 1px solid var(--border);
+  padding: 2px 7px; border-radius: 20px;
+  font-size: 10px; color: var(--gold); white-space: nowrap; flex-shrink: 0;
+}
+
+.mem-translation {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.05rem; color: var(--muted);
+  line-height: 1.5; margin-bottom: 8px;
+}
+
+.mem-footer {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 11px; color: var(--dim);
+}
+
+.mem-tag {
+  background: rgba(78,205,196,0.1); border: 1px solid rgba(78,205,196,0.2);
+  padding: 2px 7px; border-radius: 4px;
+  font-size: 10px; color: var(--success);
+}
+
+.mem-del {
+  margin-left: auto; cursor: pointer; color: var(--dim);
+  font-size: 14px; transition: color 0.2s;
+}
+
+.mem-del:hover { color: var(--danger); }
+
+.empty-state {
+  text-align: center; padding: 40px 20px;
+  color: var(--dim); font-size: 14px; line-height: 1.8;
+}
+
+.empty-state .e-icon { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
+
+/* ── Context Screen ── */
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.1rem; font-weight: 500;
+  color: var(--gold-light); letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.form-group {
+  display: flex; flex-direction: column; gap: 6px;
+}
+
+.form-label {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--muted); padding-left: 2px;
+}
+
+.form-input {
+  width: 100%;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 11px 14px;
+  color: var(--cream); font-family: 'Sora', sans-serif; font-size: 14px;
+  outline: none; transition: border-color 0.2s; appearance: none;
+}
+
+.form-input:focus { border-color: rgba(212,168,83,0.4); }
+
+.tag-row {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+
+.tag-pill {
+  padding: 6px 14px; border-radius: 20px;
+  background: var(--card); border: 1px solid var(--border);
+  font-size: 12px; cursor: pointer; transition: all 0.2s;
+  color: var(--muted);
+}
+
+.tag-pill.selected {
+  background: var(--gold-dim); border-color: var(--gold);
+  color: var(--gold);
+}
+
+.save-ctx-btn {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
+  border: none; border-radius: var(--r-sm);
+  font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 600;
+  color: #1A0D00; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(212,168,83,0.3);
+  transition: all 0.2s;
+}
+
+.save-ctx-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(212,168,83,0.4); }
+
+/* ── API Key Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(5,6,18,0.88);
+  backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-overlay.hidden { display: none; }
+
+.modal {
+  width: 100%; max-width: 360px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+}
+
+.modal-icon { font-size: 36px; margin-bottom: 12px; }
+.modal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 500; color: var(--cream);
+  margin-bottom: 6px;
+}
+
+.modal-sub { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; }
+
+.modal-input {
+  width: 100%;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r-sm); padding: 12px 14px;
+  color: var(--cream); font-family: 'Sora', sans-serif; font-size: 13px;
+  outline: none; margin-bottom: 14px;
+  transition: border-color 0.2s;
+}
+
+.modal-input:focus { border-color: rgba(212,168,83,0.4); }
+
+.modal-btn {
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
+  border: none; border-radius: var(--r-sm);
+  font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 600;
+  color: #1A0D00; cursor: pointer; transition: all 0.2s;
+}
+
+.modal-btn:hover { opacity: 0.9; }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  z-index: 200;
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 40px; padding: 10px 20px;
+  font-size: 13px; color: var(--cream);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  white-space: nowrap;
+  animation: toastIn 0.3s ease;
+  display: none;
+}
+
+.toast.show { display: block; }
+.toast.success { border-color: rgba(78,205,196,0.4); color: var(--success); }
+.toast.error { border-color: rgba(255,107,107,0.4); color: var(--danger); }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ── How to Use Modal ── */
+.howto-modal {
+  max-height: 88vh; overflow-y: auto;
+  padding: 24px 22px 28px;
+  position: relative;
+}
+
+.howto-close {
+  position: absolute; top: 16px; right: 18px;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--gold-dim); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 13px; color: var(--muted);
+  transition: all 0.2s;
+}
+
+.howto-close:hover { background: rgba(255,107,107,0.2); color: var(--danger); border-color: var(--danger); }
+
+.howto-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 22px;
+  padding-right: 36px;
+}
+
+.howto-logo {
+  width: 52px; height: 52px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px;
+  box-shadow: 0 6px 20px rgba(212,168,83,0.35);
+}
+
+.howto-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem; font-weight: 500;
+  color: var(--muted); line-height: 1.35;
+}
+
+.howto-title span { color: var(--gold-light); font-style: italic; font-size: 1.45rem; display: block; }
+
+.howto-steps { display: flex; flex-direction: column; gap: 16px; }
+
+.howto-step {
+  display: flex; gap: 14px; align-items: flex-start;
+}
+
+.step-num {
+  width: 28px; height: 28px; flex-shrink: 0;
+  background: var(--gold-dim); border: 1px solid rgba(212,168,83,0.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; color: var(--gold);
+  margin-top: 2px;
+}
+
+.step-body { flex: 1; }
+
+.step-title {
+  font-size: 13px; font-weight: 600; color: var(--cream);
+  margin-bottom: 4px;
+}
+
+.step-desc {
+  font-size: 12px; color: var(--muted); line-height: 1.65;
+}
+
+.step-desc b { color: var(--gold-light); font-weight: 600; }
+.step-desc code {
+  background: var(--card); border: 1px solid var(--border);
+  padding: 1px 5px; border-radius: 4px;
+  font-size: 11px; color: var(--success);
+  font-family: monospace;
+}
+
+.howto-tip {
+  display: flex; gap: 10px; align-items: flex-start;
+  background: rgba(212,168,83,0.07);
+  border: 1px solid rgba(212,168,83,0.2);
+  border-radius: var(--r-sm);
+  padding: 12px 14px;
+  font-size: 12px; color: var(--muted); line-height: 1.65;
+  margin-top: 4px;
+}
+
+.howto-tip span { font-size: 18px; flex-shrink: 0; }
+.howto-tip b { color: var(--gold-light); }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(212,168,83,0.2); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <div class="logo-icon">✈️</div>
+      <div class="logo-text">Travel<span>Talk</span></div>
+    </div>
+    <div class="header-right">
+      <div class="icon-btn" id="howToBtn" title="How to Use">❓</div>
+      <div class="icon-btn" id="apiKeyBtn" title="API Key">🔑</div>
+      <div class="icon-btn" id="offlineBtn" title="Offline Phrases">📥</div>
+    </div>
+  </header>
+
+  <!-- Screens -->
+
+  <!-- TRANSLATE -->
+  <div class="screen active" id="screen-translate">
+    <div class="context-bar" id="ctxBar">
+      <div class="ctx-icon">📍</div>
+      <div class="ctx-info">
+        <div class="ctx-label">Travel Context</div>
+        <div class="ctx-value" id="ctxDisplay">Tap to set location & preferences</div>
+      </div>
+      <div class="ctx-badge" id="ctxBadge">Set up</div>
+    </div>
+
+    <div class="lang-strip">
+      <select class="lang-select" id="fromLang">
+        <option value="auto">Auto Detect</option>
+        <option value="English">English</option>
+        <option value="Hindi">Hindi</option>
+        <option value="Telugu">Telugu</option>
+        <option value="Tamil">Tamil</option>
+      </select>
+      <button class="swap-btn" id="swapBtn">⇄</button>
+      <select class="lang-select" id="toLang">
+        <option value="Japanese">🇯🇵 Japanese</option>
+        <option value="French">🇫🇷 French</option>
+        <option value="Spanish">🇪🇸 Spanish</option>
+        <option value="German">🇩🇪 German</option>
+        <option value="Italian">🇮🇹 Italian</option>
+        <option value="Thai">🇹🇭 Thai</option>
+        <option value="Korean">🇰🇷 Korean</option>
+        <option value="Mandarin Chinese">🇨🇳 Mandarin</option>
+        <option value="Arabic">🇸🇦 Arabic</option>
+        <option value="Portuguese">🇧🇷 Portuguese</option>
+        <option value="Dutch">🇳🇱 Dutch</option>
+        <option value="Hindi">🇮🇳 Hindi</option>
+        <option value="Telugu">Telugu</option>
+      </select>
+    </div>
+
+    <div class="input-card">
+      <div class="input-label">Your phrase</div>
+      <textarea id="inputText" placeholder="Type or speak what you need to say…" maxlength="400"></textarea>
+      <div class="input-actions">
+        <button class="voice-btn" id="voiceBtn" title="Voice Input">🎤</button>
+        <span class="char-count" id="charCount">0/400</span>
+        <button class="translate-btn" id="translateBtn">
+          <span>Translate</span> <span>→</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="output-card" id="outputCard">
+      <div class="output-label">
+        Translation
+        <span class="output-lang-badge" id="outputLangBadge">–</span>
+      </div>
+      <div class="output-text placeholder" id="outputText">Your translation will appear here…</div>
+      <div class="output-actions" id="outputActions" style="display:none">
+        <button class="act-btn" id="speakBtn">🔊 Speak</button>
+        <button class="act-btn" id="copyBtn">📋 Copy</button>
+        <button class="act-btn" id="saveBtn">💾 Save</button>
+        <span class="save-badge" id="saveBadge" style="display:none">✓ Saved</span>
+      </div>
+    </div>
+
+    <div id="recallArea"></div>
+    <div style="height:10px"></div>
+  </div>
+
+  <!-- MEMORY -->
+  <div class="screen" id="screen-memory">
+    <div class="section-title">🧠 Phrase Memory</div>
+    <div class="search-bar">
+      <span class="s-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search phrases, places, languages…"/>
+    </div>
+    <div class="memory-list" id="memoryList"></div>
+  </div>
+
+  <!-- CONTEXT -->
+  <div class="screen" id="screen-context">
+    <div class="section-title">🌍 Travel Profile</div>
+
+    <div class="form-group">
+      <div class="form-label">Current Location / City</div>
+      <input class="form-input" id="ctxCity" placeholder="e.g. Tokyo, Paris, Bangkok"/>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">Hotel / Accommodation</div>
+      <input class="form-input" id="ctxHotel" placeholder="e.g. Hotel Okura Tokyo"/>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">Trip Purpose</div>
+      <select class="form-input" id="ctxPurpose">
+        <option value="">Select…</option>
+        <option>Leisure / Tourism</option>
+        <option>Business</option>
+        <option>Food & Culture</option>
+        <option>Adventure / Trekking</option>
+        <option>Medical Tourism</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">Dietary Preferences</div>
+      <div class="tag-row" id="dietTags">
+        <div class="tag-pill" data-val="vegetarian">🥦 Vegetarian</div>
+        <div class="tag-pill" data-val="vegan">🌿 Vegan</div>
+        <div class="tag-pill" data-val="halal">🌙 Halal</div>
+        <div class="tag-pill" data-val="jain">Jain</div>
+        <div class="tag-pill" data-val="gluten-free">🌾 Gluten-free</div>
+        <div class="tag-pill" data-val="no-pork">No Pork</div>
+        <div class="tag-pill" data-val="no-beef">No Beef</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">Communication Style</div>
+      <div class="tag-row" id="styleTags">
+        <div class="tag-pill" data-val="polite">🙏 Polite</div>
+        <div class="tag-pill" data-val="casual">😊 Casual</div>
+        <div class="tag-pill" data-val="formal">👔 Formal</div>
+        <div class="tag-pill" data-val="simple">🔤 Simple words</div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">Additional Context</div>
+      <textarea class="form-input" id="ctxNotes" placeholder="e.g. Travelling with elderly parents, need quiet rooms…" rows="3" style="resize:none"></textarea>
+    </div>
+
+    <button class="save-ctx-btn" id="saveCtxBtn">Save Travel Profile</button>
+    <div style="height:16px"></div>
+  </div>
+
+  <!-- Nav -->
+  <nav>
+    <div class="nav-item active" data-screen="translate">
+      <span class="nav-icon">🌐</span>Translate
+    </div>
+    <div class="nav-item" data-screen="memory">
+      <span class="nav-icon">🧠</span>Memory
+    </div>
+    <div class="nav-item" data-screen="context">
+      <span class="nav-icon">🗂️</span>Profile
+    </div>
+  </nav>
+</div>
+
+<!-- How to Use Modal -->
+<div class="modal-overlay hidden" id="howToModal">
+  <div class="modal howto-modal">
+    <div class="howto-close" id="howToClose">✕</div>
+    <div class="howto-header">
+      <div class="howto-logo">✈️</div>
+      <div class="howto-title">How to Use<br><span>Travel Talk AI</span></div>
+    </div>
+
+    <div class="howto-steps">
+
+      <div class="howto-step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Enter your API Key 🔑</div>
+          <div class="step-desc">Tap the <b>🔑</b> icon in the header. Paste your Anthropic API key (starts with <code>sk-ant-</code>). It's stored locally — never sent anywhere except Anthropic.</div>
+        </div>
+      </div>
+
+      <div class="howto-step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Set Your Travel Profile 🗂️</div>
+          <div class="step-desc">Go to the <b>Profile</b> tab. Enter your city, hotel, dietary needs (vegetarian, halal…), and communication style. This makes every translation context-aware — not literal.</div>
+        </div>
+      </div>
+
+      <div class="howto-step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Translate a Phrase 🌐</div>
+          <div class="step-desc">On the <b>Translate</b> tab, type or tap 🎤 to speak your phrase. Choose source & target language, then tap <b>Translate →</b>. The AI uses your travel profile for culturally accurate output.</div>
+        </div>
+      </div>
+
+      <div class="howto-step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Speak, Copy & Save 🔊</div>
+          <div class="step-desc">After translating, tap <b>🔊 Speak</b> to hear it aloud in the target language. <b>📋 Copy</b> to share it. <b>💾 Save</b> adds it to your phrase memory for future trips.</div>
+        </div>
+      </div>
+
+      <div class="howto-step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Phrase Memory — RAG Recall 🧠</div>
+          <div class="step-desc">As you type, past saved phrases appear as <b>💡 Recall cards</b>. Tap one to instantly reuse a translation. The <b>Memory</b> tab lists all saved phrases — searchable by keyword, language, or tag.</div>
+        </div>
+      </div>
+
+      <div class="howto-step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-title">Cache Offline Phrases 📥</div>
+          <div class="step-desc">Tap <b>📥</b> in the header to bulk-translate 10 essential travel phrases (doctor, bill, allergies…) into your target language and save them offline — no internet needed later.</div>
+        </div>
+      </div>
+
+      <div class="howto-tip">
+        <span>💡</span>
+        <div><b>Pro Tip:</b> Add to Home Screen on iOS (Share → Add to Home Screen) or Android (browser menu → Install App) to use it as a full PWA with offline memory access.</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- API Key Modal -->
+<div class="modal-overlay" id="apiModal">
+  <div class="modal">
+    <div class="modal-icon">🔑</div>
+    <div class="modal-title">Anthropic API Key</div>
+    <div class="modal-sub">
+      Enter your Anthropic API key to enable AI-powered context-aware translation with travel memory.
+    </div>
+    <input class="modal-input" type="password" id="apiKeyInput" placeholder="sk-ant-…"/>
+    <button class="modal-btn" id="saveApiKey">Save & Start Translating</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── State ─────────────────────────────────────────────────
+let apiKey = localStorage.getItem('tt_apiKey') || '';
+let memory = JSON.parse(localStorage.getItem('tt_memory') || '[]');
+let context = JSON.parse(localStorage.getItem('tt_context') || '{}');
+let currentTranslation = '';
+let currentOriginal = '';
+let isRecording = false;
+let recognition = null;
+let currentScreen = 'translate';
+
+// ─── Init ───────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  if (!apiKey) showApiModal();
+  renderContextBar();
+  renderMemoryScreen();
+  loadContextForm();
+  setupNavigation();
+  setupTranslate();
+  setupVoice();
+  setupSearch();
+  setupContextForm();
+  setupOffline();
+  setupHowTo();
+});
+
+// ─── API Modal ──────────────────────────────────────────────
+function showApiModal() { document.getElementById('apiModal').classList.remove('hidden'); }
+function hideApiModal() { document.getElementById('apiModal').classList.add('hidden'); }
+
+document.getElementById('saveApiKey').addEventListener('click', () => {
+  const v = document.getElementById('apiKeyInput').value.trim();
+  if (!v.startsWith('sk-ant-')) { showToast('Invalid key format', 'error'); return; }
+  apiKey = v;
+  localStorage.setItem('tt_apiKey', v);
+  hideApiModal();
+  showToast('API key saved ✓', 'success');
+});
+
+document.getElementById('apiKeyBtn').addEventListener('click', () => {
+  document.getElementById('apiKeyInput').value = apiKey;
+  showApiModal();
+});
+
+// ─── Navigation ─────────────────────────────────────────────
+function setupNavigation() {
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const s = item.dataset.screen;
+      switchScreen(s);
+    });
+  });
+
+  document.getElementById('ctxBar').addEventListener('click', () => switchScreen('context'));
+}
+
+function switchScreen(name) {
+  currentScreen = name;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.querySelector(`.nav-item[data-screen="${name}"]`).classList.add('active');
+  if (name === 'memory') renderMemoryScreen();
+}
+
+// ─── Context Bar ────────────────────────────────────────────
+function renderContextBar() {
+  const c = context;
+  if (c.city || c.hotel) {
+    const parts = [c.city, c.hotel].filter(Boolean);
+    document.getElementById('ctxDisplay').textContent = parts.join(' · ');
+    document.getElementById('ctxBadge').textContent = '✓ Active';
+  } else {
+    document.getElementById('ctxDisplay').textContent = 'Tap to set location & preferences';
+    document.getElementById('ctxBadge').textContent = 'Set up';
+  }
+}
+
+// ─── Translate ──────────────────────────────────────────────
+function setupTranslate() {
+  const input = document.getElementById('inputText');
+  const counter = document.getElementById('charCount');
+
+  input.addEventListener('input', () => {
+    counter.textContent = `${input.value.length}/400`;
+    if (input.value.length > 0) checkMemoryRecall(input.value);
+  });
+
+  document.getElementById('swapBtn').addEventListener('click', () => {
+    const f = document.getElementById('fromLang');
+    const t = document.getElementById('toLang');
+    // Only swap if from is not auto
+    if (f.value !== 'auto') {
+      const fv = f.value, tv = t.value;
+      // set from to old to
+      setSelectValue(f, tv);
+      setSelectValue(t, fv);
+    }
+  });
+
+  document.getElementById('translateBtn').addEventListener('click', doTranslate);
+
+  document.getElementById('speakBtn').addEventListener('click', speakTranslation);
+  document.getElementById('copyBtn').addEventListener('click', copyTranslation);
+  document.getElementById('saveBtn').addEventListener('click', saveToMemory);
+}
+
+function setSelectValue(sel, val) {
+  for (let o of sel.options) {
+    if (o.value === val) { sel.value = val; return; }
+  }
+}
+
+async function doTranslate() {
+  const text = document.getElementById('inputText').value.trim();
+  if (!text) { showToast('Please enter a phrase', 'error'); return; }
+  if (!apiKey) { showApiModal(); return; }
+
+  const toLang = document.getElementById('toLang').value;
+  const fromLang = document.getElementById('fromLang').value;
+
+  setOutputLoading(toLang);
+
+  // Build RAG context
+  const ragContext = buildRAGContext(text, toLang);
+
+  // Build system prompt
+  const systemPrompt = buildSystemPrompt(toLang, fromLang, ragContext);
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: text }]
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const result = data.content[0].text.trim();
+    currentTranslation = result;
+    currentOriginal = text;
+    setOutputResult(result, toLang);
+
+  } catch (e) {
+    setOutputError(e.message);
+  }
+}
+
+function buildSystemPrompt(toLang, fromLang, ragContext) {
+  const c = context;
+  let ctx = '';
+
+  if (c.city) ctx += `Traveller is currently in: ${c.city}. `;
+  if (c.hotel) ctx += `Staying at: ${c.hotel}. `;
+  if (c.purpose) ctx += `Trip purpose: ${c.purpose}. `;
+  if (c.diet && c.diet.length) ctx += `Dietary needs: ${c.diet.join(', ')}. `;
+  if (c.style) ctx += `Communication style preference: ${c.style}. `;
+  if (c.notes) ctx += `Additional context: ${c.notes}. `;
+
+  let prompt = `You are a sophisticated travel language assistant.
+Your job is to translate the user's phrase into ${toLang}${fromLang !== 'auto' ? ` from ${fromLang}` : ''}.
+
+CRITICAL RULES:
+1. Provide ONLY the translation — no explanations, no notes, no alternatives unless asked.
+2. Use CONTEXT-AWARE translation, not literal word-for-word.
+3. Adapt tone and phrasing to the local culture and setting.
+4. If the phrase is a request or question, make it natural for a traveller.
+${ctx ? '\nTRAVEL CONTEXT:\n' + ctx : ''}`;
+
+  if (ragContext) {
+    prompt += `\n\nPAST INTERACTIONS (for context continuity):\n${ragContext}`;
+  }
+
+  return prompt;
+}
+
+function buildRAGContext(text, toLang) {
+  if (!memory.length) return '';
+  const keywords = text.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+  const relevant = memory
+    .filter(m => {
+      const haystack = (m.original + ' ' + m.tags.join(' ')).toLowerCase();
+      return keywords.some(k => haystack.includes(k)) || m.lang === toLang;
+    })
+    .slice(0, 4);
+
+  if (!relevant.length) return '';
+  return relevant.map(m => `"${m.original}" → ${m.lang}: "${m.translation}"`).join('\n');
+}
+
+function setOutputLoading(lang) {
+  document.getElementById('outputLangBadge').textContent = lang;
+  const out = document.getElementById('outputText');
+  out.className = 'output-text loading';
+  out.innerHTML = `<div class="dot-loader"><span></span><span></span><span></span></div> Translating with context…`;
+  document.getElementById('outputActions').style.display = 'none';
+  document.getElementById('translateBtn').disabled = true;
+}
+
+function setOutputResult(text, lang) {
+  document.getElementById('outputLangBadge').textContent = lang;
+  const out = document.getElementById('outputText');
+  out.className = 'output-text';
+  out.textContent = text;
+  document.getElementById('outputActions').style.display = 'flex';
+  document.getElementById('saveBadge').style.display = 'none';
+  document.getElementById('translateBtn').disabled = false;
+}
+
+function setOutputError(msg) {
+  const out = document.getElementById('outputText');
+  out.className = 'output-text placeholder';
+  out.textContent = '⚠ ' + msg;
+  document.getElementById('outputActions').style.display = 'none';
+  document.getElementById('translateBtn').disabled = false;
+  showToast('Translation failed', 'error');
+}
+
+// ─── Memory Recall ──────────────────────────────────────────
+function checkMemoryRecall(text) {
+  const area = document.getElementById('recallArea');
+  if (!text || text.length < 4) { area.innerHTML = ''; return; }
+  const keywords = text.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+  const matches = memory.filter(m => {
+    const haystack = m.original.toLowerCase();
+    return keywords.some(k => haystack.includes(k));
+  }).slice(0, 2);
+
+  if (!matches.length) { area.innerHTML = ''; return; }
+
+  area.innerHTML = matches.map(m => `
+    <div class="recall-card" data-orig="${escHtml(m.original)}" data-trans="${escHtml(m.translation)}">
+      <div class="recall-header">💡 Recall from ${m.date}</div>
+      <div class="recall-phrase">${escHtml(m.translation)}</div>
+      <div class="recall-meta"><span>${escHtml(m.original)}</span><span>${m.lang}</span></div>
+    </div>
+  `).join('');
+
+  area.querySelectorAll('.recall-card').forEach(card => {
+    card.addEventListener('click', () => {
+      document.getElementById('inputText').value = card.dataset.orig;
+      currentTranslation = card.dataset.trans;
+      currentOriginal = card.dataset.orig;
+      const lang = memory.find(m => m.original === card.dataset.orig)?.lang || '';
+      setOutputResult(card.dataset.trans, lang);
+      area.innerHTML = '';
+    });
+  });
+}
+
+// ─── Voice Input ────────────────────────────────────────────
+function setupVoice() {
+  const btn = document.getElementById('voiceBtn');
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    btn.title = 'Speech not supported'; btn.style.opacity = '0.4'; return;
+  }
+
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.continuous = false;
+  recognition.interimResults = true;
+
+  recognition.onresult = (e) => {
+    const t = Array.from(e.results).map(r => r[0].transcript).join('');
+    document.getElementById('inputText').value = t;
+    document.getElementById('charCount').textContent = `${t.length}/400`;
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    btn.classList.remove('recording');
+    btn.textContent = '🎤';
+  };
+
+  btn.addEventListener('click', () => {
+    if (isRecording) { recognition.stop(); return; }
+    const fromLang = document.getElementById('fromLang').value;
+    recognition.lang = langToCode(fromLang);
+    recognition.start();
+    isRecording = true;
+    btn.classList.add('recording');
+    btn.textContent = '⏹';
+  });
+}
+
+function langToCode(lang) {
+  const map = { 'English':'en-US','Hindi':'hi-IN','Telugu':'te-IN','Tamil':'ta-IN',
+    'Japanese':'ja-JP','French':'fr-FR','Spanish':'es-ES','German':'de-DE',
+    'Italian':'it-IT','Korean':'ko-KR','Thai':'th-TH','Arabic':'ar-SA',
+    'Portuguese':'pt-BR','Dutch':'nl-NL','Mandarin Chinese':'zh-CN' };
+  return map[lang] || 'en-US';
+}
+
+// ─── Speak / Copy / Save ────────────────────────────────────
+function speakTranslation() {
+  if (!currentTranslation) return;
+  const utt = new SpeechSynthesisUtterance(currentTranslation);
+  const toLang = document.getElementById('toLang').value;
+  utt.lang = langToCode(toLang);
+  speechSynthesis.speak(utt);
+}
+
+function copyTranslation() {
+  if (!currentTranslation) return;
+  navigator.clipboard.writeText(currentTranslation).then(() => showToast('Copied!', 'success'));
+}
+
+function saveToMemory() {
+  if (!currentTranslation || !currentOriginal) return;
+  const toLang = document.getElementById('toLang').value;
+
+  // Avoid duplicates
+  if (memory.find(m => m.original === currentOriginal && m.lang === toLang)) {
+    showToast('Already saved', 'error'); return;
+  }
+
+  const tags = inferTags(currentOriginal);
+
+  memory.unshift({
+    id: Date.now(),
+    original: currentOriginal,
+    translation: currentTranslation,
+    lang: toLang,
+    date: new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }),
+    tags
+  });
+
+  localStorage.setItem('tt_memory', JSON.stringify(memory));
+  document.getElementById('saveBadge').style.display = 'block';
+  showToast('Phrase saved to memory', 'success');
+}
+
+function inferTags(text) {
+  const t = text.toLowerCase();
+  const tags = [];
+  if (/food|eat|veg|menu|restaurant|hungry|dish/i.test(t)) tags.push('food');
+  if (/hotel|room|check|stay|bed|checkout/i.test(t)) tags.push('hotel');
+  if (/where|direction|how to get|near|taxi|train|bus|flight/i.test(t)) tags.push('transport');
+  if (/help|emergency|doctor|hospital|police/i.test(t)) tags.push('emergency');
+  if (/pay|price|cost|bill|receipt|money|cash|card/i.test(t)) tags.push('payment');
+  if (!tags.length) tags.push('general');
+  return tags;
+}
+
+// ─── Memory Screen ──────────────────────────────────────────
+function renderMemoryScreen(filter = '') {
+  const list = document.getElementById('memoryList');
+  let items = memory;
+  if (filter) {
+    const q = filter.toLowerCase();
+    items = memory.filter(m =>
+      m.original.toLowerCase().includes(q) ||
+      m.translation.toLowerCase().includes(q) ||
+      m.lang.toLowerCase().includes(q) ||
+      m.tags.some(t => t.includes(q))
+    );
+  }
+
+  if (!items.length) {
+    list.innerHTML = `<div class="empty-state">
+      <div class="e-icon">🧳</div>
+      ${filter ? `No phrases matching "<b>${escHtml(filter)}</b>"` : 'No saved phrases yet.<br>Translate something and tap Save to build your travel memory.'}
+    </div>`;
+    return;
+  }
+
+  list.innerHTML = items.map((m, i) => `
+    <div class="mem-card" style="animation-delay:${i * 0.05}s">
+      <div class="mem-top">
+        <div class="mem-original">${escHtml(m.original)}</div>
+        <span class="mem-lang-pill">${escHtml(m.lang)}</span>
+      </div>
+      <div class="mem-translation">${escHtml(m.translation)}</div>
+      <div class="mem-footer">
+        ${m.tags.map(t => `<span class="mem-tag">${t}</span>`).join('')}
+        <span style="margin-left:auto;margin-right:4px">${escHtml(m.date)}</span>
+        <span class="mem-del" data-id="${m.id}" title="Delete">🗑</span>
+      </div>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('.mem-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      memory = memory.filter(m => m.id != btn.dataset.id);
+      localStorage.setItem('tt_memory', JSON.stringify(memory));
+      renderMemoryScreen(filter);
+    });
+  });
+}
+
+function setupSearch() {
+  document.getElementById('searchInput').addEventListener('input', e => {
+    renderMemoryScreen(e.target.value.trim());
+  });
+}
+
+// ─── Context Form ───────────────────────────────────────────
+function loadContextForm() {
+  const c = context;
+  document.getElementById('ctxCity').value = c.city || '';
+  document.getElementById('ctxHotel').value = c.hotel || '';
+  if (c.purpose) document.getElementById('ctxPurpose').value = c.purpose;
+  if (c.notes) document.getElementById('ctxNotes').value = c.notes;
+  if (c.diet) {
+    document.querySelectorAll('#dietTags .tag-pill').forEach(p => {
+      if (c.diet.includes(p.dataset.val)) p.classList.add('selected');
+    });
+  }
+  if (c.style) {
+    document.querySelectorAll('#styleTags .tag-pill').forEach(p => {
+      if (p.dataset.val === c.style) p.classList.add('selected');
+    });
+  }
+}
+
+function setupContextForm() {
+  document.querySelectorAll('#dietTags .tag-pill').forEach(p => {
+    p.addEventListener('click', () => p.classList.toggle('selected'));
+  });
+
+  document.querySelectorAll('#styleTags .tag-pill').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('#styleTags .tag-pill').forEach(x => x.classList.remove('selected'));
+      p.classList.add('selected');
+    });
+  });
+
+  document.getElementById('saveCtxBtn').addEventListener('click', () => {
+    const diet = Array.from(document.querySelectorAll('#dietTags .tag-pill.selected')).map(p => p.dataset.val);
+    const style = document.querySelector('#styleTags .tag-pill.selected')?.dataset.val || '';
+
+    context = {
+      city: document.getElementById('ctxCity').value.trim(),
+      hotel: document.getElementById('ctxHotel').value.trim(),
+      purpose: document.getElementById('ctxPurpose').value,
+      diet, style,
+      notes: document.getElementById('ctxNotes').value.trim()
+    };
+
+    localStorage.setItem('tt_context', JSON.stringify(context));
+    renderContextBar();
+    showToast('Travel profile saved ✓', 'success');
+    switchScreen('translate');
+  });
+}
+
+// ─── Offline Phrases ────────────────────────────────────────
+function setupOffline() {
+  document.getElementById('offlineBtn').addEventListener('click', () => {
+    loadOfflinePhrases();
+  });
+}
+
+async function loadOfflinePhrases() {
+  if (!apiKey) { showApiModal(); return; }
+  const toLang = document.getElementById('toLang').value;
+  showToast('Loading offline phrases for ' + toLang + '…');
+
+  const phrases = [
+    "Where is the nearest toilet?",
+    "I am vegetarian. I cannot eat meat or fish.",
+    "Please call a doctor.",
+    "How much does this cost?",
+    "Can I have the bill please?",
+    "I need help.",
+    "Where is the nearest hospital?",
+    "Do you accept credit cards?",
+    "Please take me to this address.",
+    "I am allergic to nuts."
+  ];
+
+  const existingOriginals = memory.map(m => m.original);
+  const newPhrases = phrases.filter(p => !existingOriginals.includes(p));
+
+  if (!newPhrases.length) { showToast('All common phrases already saved', 'success'); return; }
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `You are a travel phrase translator. Translate all provided English phrases into ${toLang}. Return ONLY a JSON array of objects with "original" and "translation" keys. No markdown, no explanation.`,
+        messages: [{ role: 'user', content: JSON.stringify(newPhrases) }]
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const rawText = data.content[0].text.trim().replace(/```json|```/g, '').trim();
+    const translations = JSON.parse(rawText);
+
+    translations.forEach(t => {
+      memory.push({
+        id: Date.now() + Math.random(),
+        original: t.original,
+        translation: t.translation,
+        lang: toLang,
+        date: new Date().toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }),
+        tags: inferTags(t.original),
+        offline: true
+      });
+    });
+
+    localStorage.setItem('tt_memory', JSON.stringify(memory));
+    showToast(`${translations.length} phrases cached offline ✓`, 'success');
+
+  } catch (e) {
+    showToast('Failed to load phrases', 'error');
+  }
+}
+
+// ─── How To Use ─────────────────────────────────────────────
+function setupHowTo() {
+  document.getElementById('howToBtn').addEventListener('click', () => {
+    document.getElementById('howToModal').classList.remove('hidden');
+  });
+  document.getElementById('howToClose').addEventListener('click', () => {
+    document.getElementById('howToModal').classList.add('hidden');
+  });
+  document.getElementById('howToModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('howToModal')) {
+      document.getElementById('howToModal').classList.add('hidden');
+    }
+  });
+}
+
+// ─── Toast ──────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ─── Utils ──────────────────────────────────────────────────
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── PWA Service Worker ─────────────────────────────────────
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'traveltalk-v1';
+    const STATIC = ['/'];
+    self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll([]))));
+    self.addEventListener('fetch', e => {
+      if (e.request.url.includes('api.anthropic.com') || e.request.url.includes('fonts.googleapis')) return;
+      e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+    });
+  `;
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(() => {});
+}
+</script>
+</body>
+</html>

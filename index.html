@@ -1206,6 +1206,12 @@ let currentScreen = 'translate';
 
 // ─── Init ───────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // Pre-load TTS voices (async in Chrome/Edge — must call early)
+  if ('speechSynthesis' in window) {
+    speechSynthesis.getVoices();
+    speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
+  }
+
   if (!apiKey) showApiModal();
   renderContextBar();
   renderMemoryScreen();
@@ -1541,11 +1547,75 @@ function langToCode(lang) {
 }
 
 // ─── Speak / Copy / Save ────────────────────────────────────
+// ─── Speak / Copy / Save ────────────────────────────────────
 function speakTranslation() {
   if (!currentTranslation) return;
-  const utt = new SpeechSynthesisUtterance(currentTranslation);
+
   const toLang = document.getElementById('toLang').value;
-  utt.lang = langToCode(toLang);
+  const targetCode = langToCode(toLang);           // e.g. "ja-JP"
+  const targetLang2 = targetCode.split('-')[0];    // e.g. "ja"
+
+  // Grab all installed voices
+  const voices = speechSynthesis.getVoices();
+
+  // 1. Exact BCP-47 match  (e.g. "ja-JP")
+  let voice = voices.find(v => v.lang.toLowerCase() === targetCode.toLowerCase());
+
+  // 2. Language prefix match  (e.g. any voice starting with "ja")
+  if (!voice) {
+    voice = voices.find(v => v.lang.toLowerCase().startsWith(targetLang2 + '-') ||
+                              v.lang.toLowerCase() === targetLang2);
+  }
+
+  if (!voice) {
+    // No TTS voice installed on this device for this language
+    showToast(`🔇 No "${toLang}" voice on this device`, 'error');
+    // Show a persistent tip under the output
+    const out = document.getElementById('outputCard');
+    let tip = document.getElementById('noVoiceTip');
+    if (!tip) {
+      tip = document.createElement('div');
+      tip.id = 'noVoiceTip';
+      tip.style.cssText = `
+        margin: -6px 0 0;
+        padding: 10px 14px;
+        background: rgba(255,107,107,0.08);
+        border: 1px solid rgba(255,107,107,0.25);
+        border-top: none;
+        border-radius: 0 0 var(--r) var(--r);
+        font-size: 12px; color: rgba(245,236,215,0.65);
+        line-height: 1.6;
+      `;
+      out.after(tip);
+    }
+    tip.innerHTML = `
+      📱 <b style="color:var(--gold-light)">No TTS voice for ${toLang}</b> installed on this device.<br>
+      <span style="color:var(--muted)">
+        iOS: Settings → Accessibility → Spoken Content → Voices<br>
+        Android: Settings → General management → Text-to-speech → Install voice<br>
+        Desktop: System Settings → Speech / Language & Input
+      </span>`;
+    tip.style.display = 'block';
+    return;
+  }
+
+  // Hide any previous tip
+  const tip = document.getElementById('noVoiceTip');
+  if (tip) tip.style.display = 'none';
+
+  const utt = new SpeechSynthesisUtterance(currentTranslation);
+  utt.voice = voice;
+  utt.lang  = voice.lang;
+  utt.rate  = 0.88;   // slightly slower for travel comprehension
+  utt.pitch = 1;
+
+  // Visual feedback on speak button
+  const btn = document.getElementById('speakBtn');
+  btn.textContent = '🔊 Speaking…';
+  utt.onend = () => { btn.textContent = '🔊 Speak'; };
+  utt.onerror = () => { btn.textContent = '🔊 Speak'; showToast('Speak failed', 'error'); };
+
+  speechSynthesis.cancel(); // stop any previous utterance
   speechSynthesis.speak(utt);
 }
 

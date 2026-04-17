@@ -750,6 +750,9 @@ textarea::placeholder { color: var(--dim); }
 .howto-tip span { font-size: 18px; flex-shrink: 0; }
 .howto-tip b { color: var(--gold-light); }
 
+.lang-select option { background: var(--card); color: var(--cream); padding: 6px; }
+.lang-select optgroup { background: var(--night); color: var(--gold); font-size: 11px; font-weight: 600; letter-spacing: 0.05em; }
+
 /* ── Scrollbar ── */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -788,27 +791,209 @@ textarea::placeholder { color: var(--dim); }
 
     <div class="lang-strip">
       <select class="lang-select" id="fromLang">
-        <option value="auto">Auto Detect</option>
-        <option value="English">English</option>
-        <option value="Hindi">Hindi</option>
-        <option value="Telugu">Telugu</option>
-        <option value="Tamil">Tamil</option>
+        <option value="auto">🔍 Auto Detect</option>
+        <optgroup label="── Indian Languages ──">
+          <option value="Hindi">हि Hindi</option>
+          <option value="Telugu">తె Telugu</option>
+          <option value="Tamil">த Tamil</option>
+          <option value="Kannada">ಕ Kannada</option>
+          <option value="Malayalam">മ Malayalam</option>
+          <option value="Bengali">বা Bengali</option>
+          <option value="Marathi">म Marathi</option>
+          <option value="Gujarati">ગ Gujarati</option>
+          <option value="Punjabi">ਪ Punjabi</option>
+          <option value="Odia">ଓ Odia</option>
+          <option value="Assamese">অ Assamese</option>
+          <option value="Urdu">اردو Urdu</option>
+          <option value="Maithili">Maithili</option>
+          <option value="Konkani">Konkani</option>
+          <option value="Sindhi">Sindhi</option>
+          <option value="Kashmiri">Kashmiri</option>
+          <option value="Dogri">Dogri</option>
+          <option value="Manipuri">Manipuri</option>
+          <option value="Bodo">Bodo</option>
+          <option value="Santali">Santali</option>
+          <option value="Nepali">Nepali (India)</option>
+          <option value="Sanskrit">Sanskrit</option>
+          <option value="Tulu">Tulu</option>
+          <option value="Bhojpuri">Bhojpuri</option>
+          <option value="Rajasthani">Rajasthani</option>
+          <option value="Haryanvi">Haryanvi</option>
+          <option value="Chhattisgarhi">Chhattisgarhi</option>
+          <option value="Awadhi">Awadhi</option>
+          <option value="Marwari">Marwari</option>
+          <option value="Kodava">Kodava</option>
+        </optgroup>
+        <optgroup label="── International ──">
+          <option value="English">🇬🇧 English</option>
+          <option value="Arabic">🇸🇦 Arabic</option>
+          <option value="French">🇫🇷 French</option>
+          <option value="Spanish">🇪🇸 Spanish</option>
+          <option value="German">🇩🇪 German</option>
+          <option value="Italian">🇮🇹 Italian</option>
+          <option value="Japanese">🇯🇵 Japanese</option>
+          <option value="Mandarin Chinese">🇨🇳 Mandarin</option>
+          <option value="Korean">🇰🇷 Korean</option>
+          <option value="Portuguese">🇧🇷 Portuguese</option>
+          <option value="Russian">🇷🇺 Russian</option>
+          <option value="Thai">🇹🇭 Thai</option>
+          <option value="Turkish">🇹🇷 Turkish</option>
+        </optgroup>
       </select>
       <button class="swap-btn" id="swapBtn">⇄</button>
       <select class="lang-select" id="toLang">
-        <option value="Japanese">🇯🇵 Japanese</option>
-        <option value="French">🇫🇷 French</option>
-        <option value="Spanish">🇪🇸 Spanish</option>
-        <option value="German">🇩🇪 German</option>
-        <option value="Italian">🇮🇹 Italian</option>
-        <option value="Thai">🇹🇭 Thai</option>
-        <option value="Korean">🇰🇷 Korean</option>
-        <option value="Mandarin Chinese">🇨🇳 Mandarin</option>
-        <option value="Arabic">🇸🇦 Arabic</option>
-        <option value="Portuguese">🇧🇷 Portuguese</option>
-        <option value="Dutch">🇳🇱 Dutch</option>
-        <option value="Hindi">🇮🇳 Hindi</option>
-        <option value="Telugu">Telugu</option>
+        <optgroup label="── 🌏 East &amp; SE Asia ──">
+          <option value="Japanese">🇯🇵 Japanese</option>
+          <option value="Mandarin Chinese">🇨🇳 Mandarin Chinese</option>
+          <option value="Cantonese">🇭🇰 Cantonese</option>
+          <option value="Korean">🇰🇷 Korean</option>
+          <option value="Thai">🇹🇭 Thai</option>
+          <option value="Vietnamese">🇻🇳 Vietnamese</option>
+          <option value="Indonesian">🇮🇩 Indonesian</option>
+          <option value="Malay">🇲🇾 Malay</option>
+          <option value="Filipino">🇵🇭 Filipino / Tagalog</option>
+          <option value="Burmese">🇲🇲 Burmese</option>
+          <option value="Khmer">🇰🇭 Khmer</option>
+          <option value="Lao">🇱🇦 Lao</option>
+          <option value="Mongolian">🇲🇳 Mongolian</option>
+          <option value="Tibetan">Tibetan</option>
+        </optgroup>
+        <optgroup label="── 🕌 Middle East &amp; Central Asia ──">
+          <option value="Arabic">🇸🇦 Arabic</option>
+          <option value="Turkish">🇹🇷 Turkish</option>
+          <option value="Persian">🇮🇷 Persian / Farsi</option>
+          <option value="Hebrew">🇮🇱 Hebrew</option>
+          <option value="Pashto">🇦🇫 Pashto</option>
+          <option value="Uzbek">🇺🇿 Uzbek</option>
+          <option value="Kazakh">🇰🇿 Kazakh</option>
+          <option value="Azerbaijani">🇦🇿 Azerbaijani</option>
+          <option value="Kurdish">Kurdish</option>
+          <option value="Armenian">🇦🇲 Armenian</option>
+          <option value="Georgian">🇬🇪 Georgian</option>
+        </optgroup>
+        <optgroup label="── 🇪🇺 Europe — West ──">
+          <option value="French">🇫🇷 French</option>
+          <option value="Spanish">🇪🇸 Spanish</option>
+          <option value="German">🇩🇪 German</option>
+          <option value="Italian">🇮🇹 Italian</option>
+          <option value="Portuguese">🇧🇷 Portuguese (Brazil)</option>
+          <option value="European Portuguese">🇵🇹 Portuguese (Portugal)</option>
+          <option value="Dutch">🇳🇱 Dutch</option>
+          <option value="Swedish">🇸🇪 Swedish</option>
+          <option value="Norwegian">🇳🇴 Norwegian</option>
+          <option value="Danish">🇩🇰 Danish</option>
+          <option value="Finnish">🇫🇮 Finnish</option>
+          <option value="Greek">🇬🇷 Greek</option>
+          <option value="Catalan">Catalan</option>
+          <option value="Basque">Basque</option>
+          <option value="Galician">Galician</option>
+          <option value="Welsh">🏴󠁧󠁢󠁷󠁬󠁳󠁿 Welsh</option>
+          <option value="Irish">🇮🇪 Irish (Gaelic)</option>
+          <option value="Maltese">🇲🇹 Maltese</option>
+          <option value="Icelandic">🇮🇸 Icelandic</option>
+          <option value="Luxembourgish">🇱🇺 Luxembourgish</option>
+        </optgroup>
+        <optgroup label="── 🇪🇺 Europe — East &amp; North ──">
+          <option value="Russian">🇷🇺 Russian</option>
+          <option value="Polish">🇵🇱 Polish</option>
+          <option value="Ukrainian">🇺🇦 Ukrainian</option>
+          <option value="Czech">🇨🇿 Czech</option>
+          <option value="Slovak">🇸🇰 Slovak</option>
+          <option value="Romanian">🇷🇴 Romanian</option>
+          <option value="Hungarian">🇭🇺 Hungarian</option>
+          <option value="Bulgarian">🇧🇬 Bulgarian</option>
+          <option value="Serbian">🇷🇸 Serbian</option>
+          <option value="Croatian">🇭🇷 Croatian</option>
+          <option value="Slovenian">🇸🇮 Slovenian</option>
+          <option value="Bosnian">🇧🇦 Bosnian</option>
+          <option value="Macedonian">🇲🇰 Macedonian</option>
+          <option value="Albanian">🇦🇱 Albanian</option>
+          <option value="Lithuanian">🇱🇹 Lithuanian</option>
+          <option value="Latvian">🇱🇻 Latvian</option>
+          <option value="Estonian">🇪🇪 Estonian</option>
+          <option value="Belarusian">🇧🇾 Belarusian</option>
+        </optgroup>
+        <optgroup label="── 🌍 Africa ──">
+          <option value="Swahili">🇰🇪 Swahili</option>
+          <option value="Amharic">🇪🇹 Amharic</option>
+          <option value="Hausa">Hausa</option>
+          <option value="Yoruba">Yoruba</option>
+          <option value="Igbo">Igbo</option>
+          <option value="Zulu">🇿🇦 Zulu</option>
+          <option value="Xhosa">🇿🇦 Xhosa</option>
+          <option value="Afrikaans">🇿🇦 Afrikaans</option>
+          <option value="Somali">🇸🇴 Somali</option>
+          <option value="Malagasy">🇲🇬 Malagasy</option>
+          <option value="Kinyarwanda">🇷🇼 Kinyarwanda</option>
+          <option value="Shona">🇿🇼 Shona</option>
+          <option value="Wolof">🇸🇳 Wolof</option>
+        </optgroup>
+        <optgroup label="── 🌎 Americas ──">
+          <option value="English">🇺🇸 English</option>
+          <option value="Spanish">🇲🇽 Spanish (Mexico)</option>
+          <option value="Portuguese">🇧🇷 Portuguese (Brazil)</option>
+          <option value="Haitian Creole">🇭🇹 Haitian Creole</option>
+          <option value="Quechua">Quechua</option>
+          <option value="Guaraní">Guaraní</option>
+        </optgroup>
+        <optgroup label="── 🇮🇳 Indian — Official ──">
+          <option value="Hindi">हि Hindi</option>
+          <option value="Bengali">বা Bengali</option>
+          <option value="Telugu">తె Telugu</option>
+          <option value="Marathi">म Marathi</option>
+          <option value="Tamil">த Tamil</option>
+          <option value="Urdu">اردو Urdu</option>
+          <option value="Gujarati">ગ Gujarati</option>
+          <option value="Kannada">ಕ Kannada</option>
+          <option value="Odia">ଓ Odia</option>
+          <option value="Malayalam">മ Malayalam</option>
+          <option value="Punjabi">ਪ Punjabi</option>
+          <option value="Assamese">অ Assamese</option>
+          <option value="Maithili">Maithili</option>
+          <option value="Sanskrit">Sanskrit</option>
+          <option value="Konkani">Konkani</option>
+          <option value="Sindhi">Sindhi</option>
+          <option value="Dogri">Dogri</option>
+          <option value="Kashmiri">Kashmiri</option>
+          <option value="Manipuri">Manipuri (Meitei)</option>
+          <option value="Bodo">Bodo</option>
+          <option value="Santali">Santali</option>
+          <option value="Nepali">Nepali (India)</option>
+        </optgroup>
+        <optgroup label="── 🇮🇳 Indian — Regional ──">
+          <option value="Tulu">Tulu (Karnataka)</option>
+          <option value="Bhojpuri">Bhojpuri (Bihar/UP)</option>
+          <option value="Rajasthani">Rajasthani</option>
+          <option value="Haryanvi">Haryanvi</option>
+          <option value="Chhattisgarhi">Chhattisgarhi</option>
+          <option value="Awadhi">Awadhi</option>
+          <option value="Marwari">Marwari</option>
+          <option value="Magahi">Magahi</option>
+          <option value="Maithili">Maithili</option>
+          <option value="Kodava">Kodava (Coorg)</option>
+          <option value="Tulu">Tulu</option>
+          <option value="Gondi">Gondi</option>
+          <option value="Kokborok">Kokborok (Tripura)</option>
+          <option value="Mizo">Mizo</option>
+          <option value="Nagamese">Nagamese</option>
+          <option value="Garo">Garo</option>
+          <option value="Khasi">Khasi</option>
+        </optgroup>
+        <optgroup label="── 🌐 South Asia ──">
+          <option value="Sinhala">🇱🇰 Sinhala</option>
+          <option value="Nepali">🇳🇵 Nepali</option>
+          <option value="Dzongkha">🇧🇹 Dzongkha (Bhutan)</option>
+          <option value="Dhivehi">🇲🇻 Dhivehi (Maldives)</option>
+          <option value="Pashto">🇦🇫 Pashto</option>
+          <option value="Dari">🇦🇫 Dari</option>
+        </optgroup>
+        <optgroup label="── 🌏 Pacific &amp; Oceania ──">
+          <option value="Maori">🇳🇿 Māori</option>
+          <option value="Hawaiian">🌺 Hawaiian</option>
+          <option value="Samoan">🇼🇸 Samoan</option>
+          <option value="Fijian">🇫🇯 Fijian</option>
+          <option value="Tongan">🇹🇴 Tongan</option>
+        </optgroup>
       </select>
     </div>
 
@@ -1305,10 +1490,53 @@ function setupVoice() {
 }
 
 function langToCode(lang) {
-  const map = { 'English':'en-US','Hindi':'hi-IN','Telugu':'te-IN','Tamil':'ta-IN',
-    'Japanese':'ja-JP','French':'fr-FR','Spanish':'es-ES','German':'de-DE',
-    'Italian':'it-IT','Korean':'ko-KR','Thai':'th-TH','Arabic':'ar-SA',
-    'Portuguese':'pt-BR','Dutch':'nl-NL','Mandarin Chinese':'zh-CN' };
+  const map = {
+    // Indian — Official
+    'Hindi':'hi-IN','Bengali':'bn-IN','Telugu':'te-IN','Marathi':'mr-IN',
+    'Tamil':'ta-IN','Urdu':'ur-IN','Gujarati':'gu-IN','Kannada':'kn-IN',
+    'Odia':'or-IN','Malayalam':'ml-IN','Punjabi':'pa-IN','Assamese':'as-IN',
+    'Maithili':'mai-IN','Sanskrit':'sa-IN','Konkani':'kok-IN','Sindhi':'sd-IN',
+    'Dogri':'doi-IN','Kashmiri':'ks-IN','Manipuri':'mni-IN','Bodo':'brx-IN',
+    'Santali':'sat-IN','Nepali':'ne-IN',
+    // Indian — Regional
+    'Tulu':'tcy','Bhojpuri':'bho','Rajasthani':'raj','Haryanvi':'bgc',
+    'Chhattisgarhi':'hne','Awadhi':'awa','Marwari':'mwr','Magahi':'mag',
+    'Kodava':'kfa','Gondi':'gon','Kokborok':'trp','Mizo':'lus',
+    'Nagamese':'nag','Garo':'grt','Khasi':'kha',
+    // East & SE Asia
+    'Japanese':'ja-JP','Mandarin Chinese':'zh-CN','Cantonese':'zh-HK',
+    'Korean':'ko-KR','Thai':'th-TH','Vietnamese':'vi-VN','Indonesian':'id-ID',
+    'Malay':'ms-MY','Filipino':'fil-PH','Burmese':'my-MM','Khmer':'km-KH',
+    'Lao':'lo-LA','Mongolian':'mn-MN','Tibetan':'bo',
+    // Middle East & Central Asia
+    'Arabic':'ar-SA','Turkish':'tr-TR','Persian':'fa-IR','Hebrew':'he-IL',
+    'Pashto':'ps-AF','Uzbek':'uz-UZ','Kazakh':'kk-KZ','Azerbaijani':'az-AZ',
+    'Kurdish':'ku','Armenian':'hy-AM','Georgian':'ka-GE',
+    // Europe — West
+    'French':'fr-FR','Spanish':'es-ES','German':'de-DE','Italian':'it-IT',
+    'Portuguese':'pt-BR','European Portuguese':'pt-PT','Dutch':'nl-NL',
+    'Swedish':'sv-SE','Norwegian':'nb-NO','Danish':'da-DK','Finnish':'fi-FI',
+    'Greek':'el-GR','Catalan':'ca-ES','Basque':'eu-ES','Galician':'gl-ES',
+    'Welsh':'cy-GB','Irish':'ga-IE','Maltese':'mt-MT','Icelandic':'is-IS',
+    'Luxembourgish':'lb-LU',
+    // Europe — East & North
+    'Russian':'ru-RU','Polish':'pl-PL','Ukrainian':'uk-UA','Czech':'cs-CZ',
+    'Slovak':'sk-SK','Romanian':'ro-RO','Hungarian':'hu-HU','Bulgarian':'bg-BG',
+    'Serbian':'sr-RS','Croatian':'hr-HR','Slovenian':'sl-SI','Bosnian':'bs-BA',
+    'Macedonian':'mk-MK','Albanian':'sq-AL','Lithuanian':'lt-LT','Latvian':'lv-LV',
+    'Estonian':'et-EE','Belarusian':'be-BY',
+    // Africa
+    'Swahili':'sw-KE','Amharic':'am-ET','Hausa':'ha','Yoruba':'yo',
+    'Igbo':'ig','Zulu':'zu-ZA','Xhosa':'xh-ZA','Afrikaans':'af-ZA',
+    'Somali':'so-SO','Malagasy':'mg','Kinyarwanda':'rw-RW','Shona':'sn',
+    'Wolof':'wo-SN',
+    // Americas
+    'English':'en-US','Haitian Creole':'ht','Quechua':'qu','Guaraní':'gn',
+    // South Asia
+    'Sinhala':'si-LK','Dari':'fa-AF','Dzongkha':'dz-BT','Dhivehi':'dv-MV',
+    // Pacific
+    'Maori':'mi-NZ','Hawaiian':'haw','Samoan':'sm','Fijian':'fj','Tongan':'to',
+  };
   return map[lang] || 'en-US';
 }
 

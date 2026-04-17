@@ -143,10 +143,11 @@ body::after {
 
 /* ── Header ── */
 header {
-  padding: 16px 20px 12px;
+  padding: env(safe-area-inset-top, 12px) 20px 12px;
+  padding-top: max(env(safe-area-inset-top, 0px), 12px);
   display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid var(--border);
-  background: rgba(8,9,26,0.6);
+  background: rgba(8,9,26,0.92);
   backdrop-filter: blur(20px);
   flex-shrink: 0;
 }
@@ -214,17 +215,24 @@ nav {
 .nav-item.active { color: var(--gold); border-top-color: var(--gold); }
 
 /* ── Screens ── */
-.screen { display: none; flex: 1; overflow-y: auto; padding: 16px 16px 0; }
-.screen.active { display: flex; flex-direction: column; gap: 14px; }
+.screen { display: none; flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ── Translate Screen specific wrapper ── */
+#screen-translate {
+  padding: 12px 14px 0;
+  gap: 10px;
+}
 
 /* ── Context Bar ── */
 .context-bar {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: var(--r);
-  padding: 12px 14px;
+  padding: 10px 14px;
   display: flex; align-items: center; gap: 10px;
   cursor: pointer; transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .context-bar:hover { border-color: var(--gold); }
@@ -281,6 +289,7 @@ nav {
   border-radius: var(--r);
   overflow: hidden;
   transition: border-color 0.2s;
+  flex-shrink: 0;
 }
 
 .input-card:focus-within { border-color: rgba(212,168,83,0.4); }
@@ -292,132 +301,114 @@ nav {
 }
 
 textarea {
-  width: 100%; min-height: 90px;
+  width: 100%;
+  height: 88px;          /* fixed height — no layout shift */
+  min-height: unset;
   background: transparent; border: none; outline: none;
-  padding: 8px 14px 12px;
+  padding: 8px 14px 8px;
   color: var(--cream); font-family: 'Sora', sans-serif;
   font-size: 15px; line-height: 1.6; resize: none;
+  overflow-y: auto;
 }
 
 textarea::placeholder { color: var(--dim); }
 
-.input-actions {
+.input-bottom-row {
   display: flex; align-items: center; gap: 8px;
   padding: 8px 12px;
   border-top: 1px solid var(--border);
   background: rgba(12,14,32,0.4);
 }
 
-.voice-btn {
-  width: 38px; height: 38px;
-  border-radius: 50%;
-  background: var(--gold-dim); border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all 0.2s;
-  font-size: 16px; color: var(--gold);
+/* ── BIG Translate Button — standalone, always visible ── */
+.translate-bar {
+  flex-shrink: 0;
+  display: flex; gap: 8px;
 }
-
-.voice-btn:hover { background: rgba(212,168,83,0.3); }
-.voice-btn.recording {
-  background: rgba(255,107,107,0.2); border-color: var(--danger);
-  color: var(--danger); animation: pulse-ring 1.2s ease infinite;
-}
-
-@keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(255,107,107,0.4); }
-  70% { box-shadow: 0 0 0 12px rgba(255,107,107,0); }
-  100% { box-shadow: 0 0 0 0 rgba(255,107,107,0); }
-}
-
-.char-count { font-size: 11px; color: var(--dim); margin-right: auto; }
 
 .translate-btn {
-  display: flex; align-items: center; gap: 6px;
-  padding: 8px 16px; border-radius: var(--r-sm);
+  flex: 1;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 20px; border-radius: var(--r-sm);
   background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
   border: none; cursor: pointer;
   font-family: 'Sora', sans-serif;
-  font-size: 13px; font-weight: 600;
-  color: #1A0D00; letter-spacing: 0.02em;
+  font-size: 15px; font-weight: 700;
+  color: #1A0D00; letter-spacing: 0.04em;
   transition: all 0.2s;
-  box-shadow: 0 4px 16px rgba(212,168,83,0.3);
+  box-shadow: 0 6px 22px rgba(212,168,83,0.4);
 }
 
-.translate-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(212,168,83,0.4); }
-.translate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.translate-btn:active { transform: scale(0.97); }
+.translate-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
 
 /* ── Output Card ── */
 .output-card {
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: var(--deep);
+  border: 1.5px solid rgba(212,168,83,0.28);
   border-radius: var(--r);
   overflow: hidden;
-  min-height: 100px;
-  position: relative;
+  flex-shrink: 0;
+}
+
+.output-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px 0;
 }
 
 .output-label {
-  padding: 10px 14px 0;
   display: flex; align-items: center; gap: 6px;
   font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted);
 }
 
 .output-lang-badge {
   background: var(--gold-dim); border: 1px solid var(--border);
-  padding: 2px 6px; border-radius: 4px;
-  font-size: 10px; color: var(--gold);
+  padding: 3px 8px; border-radius: 4px;
+  font-size: 11px; font-weight: 600; color: var(--gold);
+  text-transform: uppercase; letter-spacing: 0.06em;
 }
 
 .output-text {
-  padding: 8px 14px 14px;
+  padding: 12px 16px 16px;
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.25rem; line-height: 1.7;
+  font-size: 1.5rem; line-height: 1.65;
   color: var(--cream);
-  min-height: 60px;
+  min-height: 80px;
+  word-break: break-word;
 }
 
-.output-text.placeholder { font-style: italic; color: var(--dim); font-size: 1rem; }
+.output-text.placeholder {
+  font-style: italic; color: var(--dim);
+  font-size: 0.95rem; font-family: 'Sora', sans-serif;
+  display: flex; align-items: center;
+  min-height: 70px;
+}
 
 .output-text.loading {
-  display: flex; align-items: center; gap: 6px;
+  display: flex; align-items: center; gap: 10px;
   font-family: 'Sora', sans-serif; font-size: 13px; color: var(--muted);
-}
-
-.dot-loader {
-  display: flex; gap: 4px; align-items: center;
-}
-
-.dot-loader span {
-  width: 6px; height: 6px; border-radius: 50%;
-  background: var(--gold);
-  animation: bounce 1.2s ease infinite;
-}
-
-.dot-loader span:nth-child(2) { animation-delay: 0.2s; }
-.dot-loader span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes bounce {
-  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-  40% { transform: scale(1); opacity: 1; }
+  min-height: 70px;
 }
 
 .output-actions {
   display: flex; gap: 8px; align-items: center;
-  padding: 8px 12px;
+  padding: 10px 12px 12px;
   border-top: 1px solid var(--border);
-  background: rgba(12,14,32,0.4);
+  background: rgba(8,9,26,0.5);
+  flex-wrap: wrap;
 }
 
 .act-btn {
   display: flex; align-items: center; gap: 5px;
-  padding: 6px 12px; border-radius: 6px;
+  padding: 8px 14px; border-radius: 8px;
   background: var(--gold-dim); border: 1px solid var(--border);
   font-family: 'Sora', sans-serif;
-  font-size: 11px; color: var(--gold-light);
+  font-size: 12px; font-weight: 500; color: var(--gold-light);
   cursor: pointer; transition: all 0.2s;
 }
 
 .act-btn:hover { background: rgba(212,168,83,0.25); }
+.act-btn:active { transform: scale(0.95); }
 
 .save-badge {
   margin-left: auto; font-size: 11px; color: var(--success);
@@ -426,7 +417,39 @@ textarea::placeholder { color: var(--dim); }
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-/* ── Memory Recall ── */
+/* ── Voice Button ── */
+.voice-btn {
+  width: 38px; height: 38px; flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--gold-dim); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s;
+  font-size: 16px; color: var(--gold);
+}
+.voice-btn:hover { background: rgba(212,168,83,0.3); }
+.voice-btn.recording {
+  background: rgba(255,107,107,0.2); border-color: var(--danger);
+  color: var(--danger); animation: pulse-ring 1.2s ease infinite;
+}
+@keyframes pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(255,107,107,0.4); }
+  70%  { box-shadow: 0 0 0 12px rgba(255,107,107,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,107,107,0); }
+}
+.char-count { font-size: 11px; color: var(--dim); flex: 1; }
+
+/* ── Dot Loader ── */
+.dot-loader { display: flex; gap: 4px; align-items: center; }
+.dot-loader span {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--gold); animation: bounce 1.2s ease infinite;
+}
+.dot-loader span:nth-child(2) { animation-delay: 0.2s; }
+.dot-loader span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0.55); opacity: 0.35; }
+  40%           { transform: scale(1);    opacity: 1;    }
+}
 .recall-card {
   background: rgba(212,168,83,0.06);
   border: 1px solid rgba(212,168,83,0.22);
@@ -1000,18 +1023,22 @@ textarea::placeholder { color: var(--dim); }
     <div class="input-card">
       <div class="input-label">Your phrase</div>
       <textarea id="inputText" placeholder="Type or speak what you need to say…" maxlength="400"></textarea>
-      <div class="input-actions">
+      <div class="input-bottom-row">
         <button class="voice-btn" id="voiceBtn" title="Voice Input">🎤</button>
         <span class="char-count" id="charCount">0/400</span>
-        <button class="translate-btn" id="translateBtn">
-          <span>Translate</span> <span>→</span>
-        </button>
       </div>
     </div>
 
+    <!-- Translate button — standalone, always visible -->
+    <div class="translate-bar">
+      <button class="translate-btn" id="translateBtn">
+        🌐 &nbsp;Translate
+      </button>
+    </div>
+
     <div class="output-card" id="outputCard">
-      <div class="output-label">
-        Translation
+      <div class="output-header">
+        <div class="output-label">Translation</div>
         <span class="output-lang-badge" id="outputLangBadge">–</span>
       </div>
       <div class="output-text placeholder" id="outputText">Your translation will appear here…</div>
@@ -1024,11 +1051,11 @@ textarea::placeholder { color: var(--dim); }
     </div>
 
     <div id="recallArea"></div>
-    <div style="height:10px"></div>
+    <div style="height:20px; flex-shrink:0"></div>
   </div>
 
   <!-- MEMORY -->
-  <div class="screen" id="screen-memory">
+  <div class="screen" id="screen-memory" style="padding:14px 14px 0; gap:12px;">
     <div class="section-title">🧠 Phrase Memory</div>
     <div class="search-bar">
       <span class="s-icon">🔍</span>
@@ -1038,7 +1065,7 @@ textarea::placeholder { color: var(--dim); }
   </div>
 
   <!-- CONTEXT -->
-  <div class="screen" id="screen-context">
+  <div class="screen" id="screen-context" style="padding:14px 14px 0; gap:14px;">
     <div class="section-title">🌍 Travel Profile</div>
 
     <div class="form-group">
@@ -1404,9 +1431,10 @@ function setOutputLoading(lang) {
   document.getElementById('outputLangBadge').textContent = lang;
   const out = document.getElementById('outputText');
   out.className = 'output-text loading';
-  out.innerHTML = `<div class="dot-loader"><span></span><span></span><span></span></div> Translating with context…`;
+  out.innerHTML = `<div class="dot-loader"><span></span><span></span><span></span></div><span>Translating…</span>`;
   document.getElementById('outputActions').style.display = 'none';
   document.getElementById('translateBtn').disabled = true;
+  document.getElementById('translateBtn').textContent = '⏳  Translating…';
 }
 
 function setOutputResult(text, lang) {
@@ -1417,6 +1445,7 @@ function setOutputResult(text, lang) {
   document.getElementById('outputActions').style.display = 'flex';
   document.getElementById('saveBadge').style.display = 'none';
   document.getElementById('translateBtn').disabled = false;
+  document.getElementById('translateBtn').innerHTML = '🌐 &nbsp;Translate';
 }
 
 function setOutputError(msg) {
@@ -1425,6 +1454,7 @@ function setOutputError(msg) {
   out.textContent = '⚠ ' + msg;
   document.getElementById('outputActions').style.display = 'none';
   document.getElementById('translateBtn').disabled = false;
+  document.getElementById('translateBtn').innerHTML = '🌐 &nbsp;Translate';
   showToast('Translation failed', 'error');
 }
 

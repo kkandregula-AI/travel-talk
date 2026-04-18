@@ -719,7 +719,96 @@ textarea::placeholder { color: var(--dim); }
   padding: 50px 20px; color: var(--muted); font-size: 13px;
 }
 
-/* ── API Key Modal ── */
+/* ── Mode Badge (header) ── */
+.mode-badge {
+  display: flex; align-items: center; gap: 5px;
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+  border: 1px solid;
+  cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.mode-badge.claude { background: rgba(212,168,83,0.12); border-color: rgba(212,168,83,0.35); color: var(--gold); }
+.mode-badge.free   { background: rgba(34,197,94,0.12);  border-color: rgba(34,197,94,0.35);  color: #4ADE80; }
+.mode-badge .mode-dot { width:6px;height:6px;border-radius:50%;animation:blink2 2s ease infinite; }
+.mode-badge.claude .mode-dot { background: var(--gold); }
+.mode-badge.free   .mode-dot { background: #4ADE80; }
+@keyframes blink2 { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ── Rich API Modal ── */
+.api-modal {
+  padding: 0 0 20px;
+  overflow: hidden;
+}
+.api-modal-tabs {
+  display: flex; border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+}
+.api-tab {
+  flex: 1; padding: 14px 10px; text-align: center;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
+  color: var(--dim); cursor: pointer; transition: all 0.2s;
+  border-bottom: 2px solid transparent;
+}
+.api-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+#panelGetKey, #panelFree { padding: 0 22px; }
+
+.api-steps { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+.api-step {
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.api-step-num {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  background: var(--gold-dim); border: 1px solid rgba(212,168,83,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--gold);
+}
+.api-step-body {
+  font-size: 13px; color: var(--cream); padding-top: 3px; line-height: 1.5;
+}
+.api-step-body b { color: var(--gold-light); }
+.api-step-body code {
+  background: var(--card); border: 1px solid var(--border);
+  padding: 1px 6px; border-radius: 4px;
+  font-size: 11px; color: var(--success); font-family: monospace;
+}
+.api-link {
+  color: var(--gold); text-decoration: none; font-weight: 600;
+  border-bottom: 1px solid rgba(212,168,83,0.3);
+  transition: border-color 0.2s;
+}
+.api-link:hover { border-bottom-color: var(--gold); }
+
+.api-note {
+  background: rgba(212,168,83,0.07);
+  border: 1px solid rgba(212,168,83,0.2);
+  border-radius: 8px; padding: 10px 12px;
+  font-size: 12px; color: var(--muted); line-height: 1.6;
+  margin-bottom: 14px;
+}
+.api-note b { color: var(--gold-light); }
+
+.modal-btn-ghost {
+  width: 100%; padding: 11px;
+  background: transparent; border: 1px solid var(--border);
+  border-radius: var(--r-sm); margin-top: 8px;
+  font-family: 'Sora', sans-serif; font-size: 12px;
+  color: var(--muted); cursor: pointer; transition: all 0.2s;
+}
+.modal-btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+.free-features {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; margin: 16px 0;
+}
+.free-feat {
+  font-size: 12px; color: var(--cream); padding: 8px 10px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 8px; line-height: 1.3;
+}
+.free-feat-dim { color: var(--muted); }
+
+/* ── API Key Modal (base) ── */
 .modal-overlay {
   position: fixed; inset: 0; z-index: 100;
   background: rgba(5,6,18,0.88);
@@ -900,6 +989,9 @@ textarea::placeholder { color: var(--dim); }
       <div class="logo-text">Travel<span>Talk</span></div>
     </div>
     <div class="header-right">
+      <div class="mode-badge claude" id="modeBadge" title="AI Mode — tap to change">
+        <span class="mode-dot"></span><span id="modeLabel">CLAUDE</span>
+      </div>
       <div class="icon-btn" id="howToBtn" title="How to Use">❓</div>
       <div class="icon-btn" id="apiKeyBtn" title="API Key">🔑</div>
       <div class="icon-btn" id="offlineBtn" title="Offline Phrases">📥</div>
@@ -1346,14 +1438,77 @@ textarea::placeholder { color: var(--dim); }
 
 <!-- API Key Modal -->
 <div class="modal-overlay" id="apiModal">
-  <div class="modal">
-    <div class="modal-icon">🔑</div>
-    <div class="modal-title">Anthropic API Key</div>
-    <div class="modal-sub">
-      Enter your Anthropic API key to enable AI-powered context-aware translation with travel memory.
+  <div class="modal api-modal">
+
+    <div class="api-modal-tabs">
+      <div class="api-tab active" id="tabGetKey" onclick="switchApiTab('getkey')">🔑 Use Claude AI</div>
+      <div class="api-tab" id="tabFree" onclick="switchApiTab('free')">⚡ Free Mode</div>
     </div>
-    <input class="modal-input" type="password" id="apiKeyInput" placeholder="sk-ant-…"/>
-    <button class="modal-btn" id="saveApiKey">Save & Start Translating</button>
+
+    <!-- GET KEY PANEL -->
+    <div id="panelGetKey">
+      <div class="modal-title" style="margin-top:16px">Get Your API Key</div>
+      <div class="modal-sub">Follow these steps to get your free Anthropic key:</div>
+
+      <div class="api-steps">
+        <div class="api-step">
+          <div class="api-step-num">1</div>
+          <div class="api-step-body">
+            Open <a href="https://console.anthropic.com" target="_blank" class="api-link">console.anthropic.com ↗</a>
+          </div>
+        </div>
+        <div class="api-step">
+          <div class="api-step-num">2</div>
+          <div class="api-step-body">Sign up / Log in with your email</div>
+        </div>
+        <div class="api-step">
+          <div class="api-step-num">3</div>
+          <div class="api-step-body">Click <b>API Keys</b> in the left sidebar</div>
+        </div>
+        <div class="api-step">
+          <div class="api-step-num">4</div>
+          <div class="api-step-body">Click <b>Create Key</b> → copy the key</div>
+        </div>
+        <div class="api-step">
+          <div class="api-step-num">5</div>
+          <div class="api-step-body">Paste it below — it starts with <code>sk-ant-</code></div>
+        </div>
+      </div>
+
+      <div class="api-note">
+        💳 New accounts get <b>$5 free credits</b> — enough for hundreds of translations.
+      </div>
+
+      <input class="modal-input" type="password" id="apiKeyInput" placeholder="sk-ant-api03-…"/>
+      <button class="modal-btn" id="saveApiKey">Save & Start with Claude AI</button>
+      <button class="modal-btn-ghost" onclick="switchApiTab('free')">No key yet → Use Free Mode instead</button>
+    </div>
+
+    <!-- FREE MODE PANEL -->
+    <div id="panelFree" style="display:none">
+      <div class="modal-title" style="margin-top:16px">⚡ Free Mode</div>
+      <div class="modal-sub">No API key needed. Uses <b>Pollinations AI</b> — a free, open-access AI service.</div>
+
+      <div class="free-features">
+        <div class="free-feat">✅ Translation works</div>
+        <div class="free-feat">✅ All 90+ languages</div>
+        <div class="free-feat">✅ Travel profile context</div>
+        <div class="free-feat">✅ Phrase memory</div>
+        <div class="free-feat">✅ Explore attractions</div>
+        <div class="free-feat free-feat-dim">⚡ Slightly slower</div>
+        <div class="free-feat free-feat-dim">⚡ Shorter responses</div>
+      </div>
+
+      <div class="api-note" style="margin-bottom:16px">
+        🔒 No data stored. Powered by <a href="https://pollinations.ai" target="_blank" class="api-link">pollinations.ai ↗</a> — free forever, no signup.
+      </div>
+
+      <button class="modal-btn" id="startFreeMode" style="background:linear-gradient(135deg,#16A34A,#22C55E);box-shadow:0 4px 16px rgba(22,163,74,0.35)">
+        ⚡ Start in Free Mode
+      </button>
+      <button class="modal-btn-ghost" onclick="switchApiTab('getkey')">← I have an API key</button>
+    </div>
+
   </div>
 </div>
 
@@ -1379,7 +1534,8 @@ document.addEventListener('DOMContentLoaded', () => {
     speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices();
   }
 
-  if (!apiKey) showApiModal();
+  if (!apiKey && !useFreeTier) showApiModal();
+  updateModeBadge();
   renderContextBar();
   renderMemoryScreen();
   loadContextForm();
@@ -1396,21 +1552,105 @@ document.addEventListener('DOMContentLoaded', () => {
   if (context.city) applyAutoLang(context.city);
 });
 
+// ─── AI Mode ────────────────────────────────────────────────
+let useFreeTier = localStorage.getItem('tt_freeTier') === 'true';
+
+function updateModeBadge() {
+  const badge = document.getElementById('modeBadge');
+  const label = document.getElementById('modeLabel');
+  if (useFreeTier) {
+    badge.className = 'mode-badge free';
+    label.textContent = 'FREE';
+  } else {
+    badge.className = 'mode-badge claude';
+    label.textContent = 'CLAUDE';
+  }
+}
+
+// ─── Central AI caller — routes to Anthropic or Pollinations ──
+async function callAI(systemPrompt, userMessage) {
+  if (!useFreeTier && apiKey) {
+    // ── Anthropic Claude API ──
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMessage }]
+      })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    return data.content[0].text.trim();
+
+  } else {
+    // ── Pollinations AI (free, no key) ──
+    const messages = [
+      { role: 'system', content: systemPrompt },
+      { role: 'user',   content: userMessage  }
+    ];
+    const res = await fetch('https://text.pollinations.ai/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages,
+        model: 'openai-large',
+        private: true,
+        seed: Math.floor(Math.random() * 9999)
+      })
+    });
+    if (!res.ok) throw new Error(`Free AI error: ${res.status}`);
+    const text = await res.text();
+    return text.trim();
+  }
+}
+
 // ─── API Modal ──────────────────────────────────────────────
 function showApiModal() { document.getElementById('apiModal').classList.remove('hidden'); }
 function hideApiModal() { document.getElementById('apiModal').classList.add('hidden'); }
 
+function switchApiTab(tab) {
+  document.getElementById('panelGetKey').style.display = tab === 'getkey' ? 'block' : 'none';
+  document.getElementById('panelFree').style.display   = tab === 'free'    ? 'block' : 'none';
+  document.getElementById('tabGetKey').classList.toggle('active', tab === 'getkey');
+  document.getElementById('tabFree').classList.toggle('active',   tab === 'free');
+}
+
 document.getElementById('saveApiKey').addEventListener('click', () => {
   const v = document.getElementById('apiKeyInput').value.trim();
-  if (!v.startsWith('sk-ant-')) { showToast('Invalid key format', 'error'); return; }
+  if (!v.startsWith('sk-ant-')) { showToast('Key must start with sk-ant-', 'error'); return; }
   apiKey = v;
+  useFreeTier = false;
   localStorage.setItem('tt_apiKey', v);
+  localStorage.setItem('tt_freeTier', 'false');
+  updateModeBadge();
   hideApiModal();
-  showToast('API key saved ✓', 'success');
+  showToast('Claude AI ready ✓', 'success');
+});
+
+document.getElementById('startFreeMode').addEventListener('click', () => {
+  useFreeTier = true;
+  localStorage.setItem('tt_freeTier', 'true');
+  updateModeBadge();
+  hideApiModal();
+  showToast('⚡ Free mode active — no key needed!', 'success');
 });
 
 document.getElementById('apiKeyBtn').addEventListener('click', () => {
   document.getElementById('apiKeyInput').value = apiKey;
+  switchApiTab('getkey');
+  showApiModal();
+});
+
+document.getElementById('modeBadge').addEventListener('click', () => {
+  switchApiTab(useFreeTier ? 'getkey' : 'free');
   showApiModal();
 });
 
@@ -1487,44 +1727,21 @@ function setSelectValue(sel, val) {
 async function doTranslate() {
   const text = document.getElementById('inputText').value.trim();
   if (!text) { showToast('Please enter a phrase', 'error'); return; }
-  if (!apiKey) { showApiModal(); return; }
+  if (!apiKey && !useFreeTier) { showApiModal(); return; }
 
   const toLang = document.getElementById('toLang').value;
   const fromLang = document.getElementById('fromLang').value;
 
   setOutputLoading(toLang);
 
-  // Build RAG context
-  const ragContext = buildRAGContext(text, toLang);
-
-  // Build system prompt
+  const ragContext  = buildRAGContext(text, toLang);
   const systemPrompt = buildSystemPrompt(toLang, fromLang, ragContext);
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: text }]
-      })
-    });
-
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-
-    const result = data.content[0].text.trim();
+    const result = await callAI(systemPrompt, text);
     currentTranslation = result;
-    currentOriginal = text;
+    currentOriginal    = text;
     setOutputResult(result, toLang);
-
   } catch (e) {
     setOutputError(e.message);
   }
@@ -1972,7 +2189,7 @@ function setupOffline() {
 }
 
 async function loadOfflinePhrases() {
-  if (!apiKey) { showApiModal(); return; }
+  if (!apiKey && !useFreeTier) { showApiModal(); return; }
   const toLang = document.getElementById('toLang').value;
   showToast('Loading offline phrases for ' + toLang + '…');
 
@@ -1991,31 +2208,14 @@ async function loadOfflinePhrases() {
 
   const existingOriginals = memory.map(m => m.original);
   const newPhrases = phrases.filter(p => !existingOriginals.includes(p));
-
   if (!newPhrases.length) { showToast('All common phrases already saved', 'success'); return; }
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: `You are a travel phrase translator. Translate all provided English phrases into ${toLang}. Return ONLY a JSON array of objects with "original" and "translation" keys. No markdown, no explanation.`,
-        messages: [{ role: 'user', content: JSON.stringify(newPhrases) }]
-      })
-    });
-
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-
-    const rawText = data.content[0].text.trim().replace(/```json|```/g, '').trim();
-    const translations = JSON.parse(rawText);
+    const system = `You are a travel phrase translator. Translate all provided English phrases into ${toLang}. Return ONLY a JSON array of objects with "original" and "translation" keys. No markdown, no explanation.`;
+    const raw = await callAI(system, JSON.stringify(newPhrases));
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const start = clean.indexOf('['), end = clean.lastIndexOf(']');
+    const translations = JSON.parse(clean.slice(start, end + 1));
 
     translations.forEach(t => {
       memory.push({
@@ -2143,12 +2343,8 @@ function updateExploreCityName() {
 
 async function loadAttractions() {
   const city = context.city || '';
-  if (!city) {
-    showToast('Set your city in Profile first', 'error');
-    switchScreen('context');
-    return;
-  }
-  if (!apiKey) { showApiModal(); return; }
+  if (!city) { showToast('Set your city in Profile first', 'error'); switchScreen('context'); return; }
+  if (!apiKey && !useFreeTier) { showApiModal(); return; }
 
   const btn = document.getElementById('exploreBtn');
   btn.disabled = true; btn.textContent = '⏳ Loading…';
@@ -2160,60 +2356,33 @@ async function loadAttractions() {
     </div>`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 3000,
-        system: `You are a travel guide. Output ONLY a raw JSON array with NO markdown fences, NO explanation, NO extra text before or after. Just the [ ... ] array.
+    const system = `You are a travel guide. Output ONLY a raw JSON array with NO markdown fences, NO explanation, NO extra text before or after. Just the [ ... ] array.
 Each object has these exact keys:
 - name: string — official attraction name
 - category: string — exactly one of: Landmark, Temple, Museum, Nature, Food, Market, Beach, Palace, Park, Fort
 - emoji: string — one emoji
 - desc: string — vivid 1-sentence description under 100 chars
 - bestTime: string — e.g. "Morning" or "Oct–Mar" under 18 chars
-- imgSearch: string — 3–4 keywords for an image search, e.g. "Eiffel Tower Paris night"
-- travelPhrase: string — short English phrase a tourist says there, e.g. "One ticket please"
-Return exactly 10 items.`,
-        messages: [{ role: 'user', content: `Top 10 must-visit tourist attractions in ${city}` }]
-      })
-    });
+- imgSearch: string — 3–4 keywords for an image search
+- travelPhrase: string — short English phrase a tourist says there
+Return exactly 10 items.`;
 
-    const data = await res.json();
-    if (data.error) throw new Error(data.error.message);
-
-    let raw = data.content[0].text.trim();
-    // Strip any accidental markdown fences
-    raw = raw.replace(/^```[\w]*\n?/,'').replace(/\n?```$/,'').trim();
-    // Find the JSON array even if there's surrounding text
-    const start = raw.indexOf('[');
-    const end   = raw.lastIndexOf(']');
+    const raw = await callAI(system, `Top 10 must-visit tourist attractions in ${city}`);
+    let clean = raw.replace(/^```[\w]*\n?/,'').replace(/\n?```$/,'').trim();
+    const start = clean.indexOf('['), end = clean.lastIndexOf(']');
     if (start === -1 || end === -1) throw new Error('No JSON array in response');
-    raw = raw.slice(start, end + 1);
+    allAttractions = JSON.parse(clean.slice(start, end + 1));
 
-    allAttractions = JSON.parse(raw);
-
-    // Fetch Wikimedia thumbnails via Wikipedia's CORS-friendly search API
+    // Fetch Wikipedia thumbnails
     await Promise.allSettled(allAttractions.map(async (a) => {
       try {
-        // Use Wikipedia search API — fully CORS-compatible from any browser origin
-        const q = encodeURIComponent(a.name + ' ' + city);
         const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(a.name)}&prop=pageimages&format=json&pithumbsize=400&origin=*`;
         const r = await fetch(apiUrl);
-        if (!r.ok) throw new Error('wiki fail');
+        if (!r.ok) throw new Error();
         const d = await r.json();
-        const pages = d.query?.pages || {};
-        const page  = Object.values(pages)[0];
+        const page = Object.values(d.query?.pages || {})[0];
         a.thumb = page?.thumbnail?.source || '';
-      } catch {
-        a.thumb = '';
-      }
+      } catch { a.thumb = ''; }
     }));
 
     renderAttractions();

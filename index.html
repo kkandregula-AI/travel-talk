@@ -1410,6 +1410,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupHowTo();
   setupExplore();
   updateExploreCityName();
+  // Auto-set target language if city already saved in profile
+  if (context.city) applyAutoLang(context.city);
 });
 
 // ─── API Modal ──────────────────────────────────────────────
@@ -1974,6 +1976,7 @@ function setupContextForm() {
     localStorage.setItem('tt_context', JSON.stringify(context));
     renderContextBar();
     updateExploreCityName();
+    applyAutoLang(context.city);
     showToast('Travel profile saved ✓', 'success');
     switchScreen('translate');
   });
@@ -2067,13 +2070,80 @@ function setupHowTo() {
   });
 }
 
+// ─── City → Language auto-suggest ───────────────────────────
+const CITY_LANG_MAP = {
+  // Europe
+  paris:'French', lyon:'French', marseille:'French', nice:'French', bordeaux:'French',
+  london:'English', manchester:'English', edinburgh:'English', dublin:'Irish',
+  berlin:'German', munich:'German', hamburg:'German', vienna:'German', zurich:'German',
+  rome:'Italian', milan:'Italian', venice:'Italian', florence:'Italian', naples:'Italian',
+  madrid:'Spanish', barcelona:'Spanish', seville:'Spanish', valencia:'Spanish',
+  lisbon:'European Portuguese', porto:'European Portuguese',
+  amsterdam:'Dutch', rotterdam:'Dutch', brussels:'Dutch',
+  athens:'Greek', thessaloniki:'Greek',
+  moscow:'Russian', 'saint petersburg':'Russian',
+  warsaw:'Polish', krakow:'Polish',
+  prague:'Czech', budapest:'Hungarian', bucharest:'Romanian',
+  stockholm:'Swedish', oslo:'Norwegian', copenhagen:'Danish', helsinki:'Finnish',
+  reykjavik:'Icelandic',
+  // Asia
+  tokyo:'Japanese', osaka:'Japanese', kyoto:'Japanese', hiroshima:'Japanese',
+  beijing:'Mandarin Chinese', shanghai:'Mandarin Chinese', guangzhou:'Cantonese',
+  'hong kong':'Cantonese',
+  seoul:'Korean', busan:'Korean',
+  bangkok:'Thai', chiang:'Thai',
+  hanoi:'Vietnamese', 'ho chi minh':'Vietnamese', saigon:'Vietnamese',
+  singapore:'Malay', kuala:'Malay',
+  jakarta:'Indonesian', bali:'Indonesian',
+  manila:'Filipino', cebu:'Filipino',
+  taipei:'Mandarin Chinese',
+  // Middle East
+  dubai:'Arabic', abu:'Arabic', riyadh:'Arabic', cairo:'Arabic',
+  istanbul:'Turkish', ankara:'Turkish',
+  tehran:'Persian', jerusalem:'Hebrew', 'tel aviv':'Hebrew',
+  // South Asia
+  colombo:'Sinhala', kathmandu:'Nepali',
+  // India
+  delhi:'Hindi', mumbai:'Marathi', kolkata:'Bengali', bangalore:'Kannada',
+  hyderabad:'Telugu', chennai:'Tamil', kochi:'Malayalam', pune:'Marathi',
+  ahmedabad:'Gujarati', jaipur:'Hindi', lucknow:'Hindi', varanasi:'Hindi',
+  amritsar:'Punjabi', bhubaneswar:'Odia', guwahati:'Assamese',
+  // Africa
+  nairobi:'Swahili', dar:'Swahili', addis:'Amharic', lagos:'Yoruba',
+  // Americas
+  'new york':'English', 'los angeles':'English', chicago:'English',
+  'sao paulo':'Portuguese', 'rio de janeiro':'Portuguese',
+  'mexico city':'Spanish', cancun:'Spanish', bogota:'Spanish', lima:'Spanish',
+};
+
+function autoDetectLangForCity(city) {
+  if (!city) return null;
+  const c = city.toLowerCase();
+  for (const [key, lang] of Object.entries(CITY_LANG_MAP)) {
+    if (c.includes(key)) return lang;
+  }
+  return null;
+}
+
+function applyAutoLang(city) {
+  const suggested = autoDetectLangForCity(city);
+  if (!suggested) return;
+  const sel = document.getElementById('toLang');
+  for (const opt of sel.options) {
+    if (opt.value === suggested) {
+      sel.value = suggested;
+      showToast(`🌐 Language auto-set to ${suggested} for ${city}`, 'success');
+      return;
+    }
+  }
+}
+
 // ─── Explore Tab ────────────────────────────────────────────
 let allAttractions = [];
 let activeCat = 'all';
 
 function setupExplore() {
   document.getElementById('exploreBtn').addEventListener('click', loadAttractions);
-
   document.querySelectorAll('.cat-chip').forEach(chip => {
     chip.addEventListener('click', () => {
       document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
@@ -2118,37 +2188,50 @@ async function loadAttractions() {
       },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1800,
-        system: `You are a travel guide expert. Return ONLY a valid JSON array — no markdown, no explanation.
-Each object must have exactly these keys:
-  name (string): Exact official name of the attraction (use the name a Wikipedia article would have)
-  category (string): One of: Landmark, Temple, Museum, Nature, Food, Market, Beach, Palace, Park, Fort
-  emoji (string): One relevant emoji
-  desc (string): 1–2 sentence description, vivid and informative, max 120 chars
-  bestTime (string): Best time to visit, max 20 chars
-  wikiSlug (string): Wikipedia article title for this place, URL-encoded if needed (e.g. "Senso-ji" or "Eiffel_Tower")
-  travelPhrase (string): A short English phrase a tourist would say there (e.g. "One ticket please")
-Return exactly 10 attractions.`,
-        messages: [{ role: 'user', content: `Top 10 tourist attractions in ${city}` }]
+        max_tokens: 3000,
+        system: `You are a travel guide. Output ONLY a raw JSON array with NO markdown fences, NO explanation, NO extra text before or after. Just the [ ... ] array.
+Each object has these exact keys:
+- name: string — official attraction name
+- category: string — exactly one of: Landmark, Temple, Museum, Nature, Food, Market, Beach, Palace, Park, Fort
+- emoji: string — one emoji
+- desc: string — vivid 1-sentence description under 100 chars
+- bestTime: string — e.g. "Morning" or "Oct–Mar" under 18 chars
+- imgSearch: string — 3–4 keywords for an image search, e.g. "Eiffel Tower Paris night"
+- travelPhrase: string — short English phrase a tourist says there, e.g. "One ticket please"
+Return exactly 10 items.`,
+        messages: [{ role: 'user', content: `Top 10 must-visit tourist attractions in ${city}` }]
       })
     });
 
     const data = await res.json();
     if (data.error) throw new Error(data.error.message);
 
-    const raw = data.content[0].text.trim().replace(/```json|```/g, '').trim();
+    let raw = data.content[0].text.trim();
+    // Strip any accidental markdown fences
+    raw = raw.replace(/^```[\w]*\n?/,'').replace(/\n?```$/,'').trim();
+    // Find the JSON array even if there's surrounding text
+    const start = raw.indexOf('[');
+    const end   = raw.lastIndexOf(']');
+    if (start === -1 || end === -1) throw new Error('No JSON array in response');
+    raw = raw.slice(start, end + 1);
+
     allAttractions = JSON.parse(raw);
 
-    // Fetch Wikipedia thumbnails in parallel
-    await Promise.all(allAttractions.map(async (a) => {
+    // Fetch Wikimedia thumbnails via Wikipedia's CORS-friendly search API
+    await Promise.allSettled(allAttractions.map(async (a) => {
       try {
-        const slug = encodeURIComponent(a.wikiSlug.replace(/ /g, '_'));
-        const r = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${slug}`);
-        if (r.ok) {
-          const d = await r.json();
-          a.thumb = d.thumbnail?.source || '';
-        }
-      } catch { a.thumb = ''; }
+        // Use Wikipedia search API — fully CORS-compatible from any browser origin
+        const q = encodeURIComponent(a.name + ' ' + city);
+        const apiUrl = `https://en.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(a.name)}&prop=pageimages&format=json&pithumbsize=400&origin=*`;
+        const r = await fetch(apiUrl);
+        if (!r.ok) throw new Error('wiki fail');
+        const d = await r.json();
+        const pages = d.query?.pages || {};
+        const page  = Object.values(pages)[0];
+        a.thumb = page?.thumbnail?.source || '';
+      } catch {
+        a.thumb = '';
+      }
     }));
 
     renderAttractions();
@@ -2157,7 +2240,8 @@ Return exactly 10 attractions.`,
     document.getElementById('attractionsGrid').innerHTML = `
       <div class="explore-empty">
         <span class="e-icon">⚠️</span>
-        Could not load attractions.<br><small style="color:var(--dim)">${escHtml(e.message)}</small>
+        <b style="color:var(--danger)">Could not load attractions</b><br>
+        <small style="color:var(--dim);font-size:11px">${escHtml(e.message)}</small>
       </div>`;
     showToast('Failed to load attractions', 'error');
   } finally {
@@ -2172,30 +2256,37 @@ function renderAttractions() {
     : allAttractions.filter(a => a.category === activeCat);
 
   if (!filtered.length) {
-    grid.innerHTML = `<div class="explore-empty"><span class="e-icon">🔍</span>No ${activeCat} attractions found.<br>Try a different category.</div>`;
+    grid.innerHTML = `<div class="explore-empty"><span class="e-icon">🔍</span>No ${escHtml(activeCat)} attractions found.<br>Try a different category.</div>`;
     return;
   }
 
-  grid.innerHTML = filtered.map((a, i) => `
-    <div class="attr-card" style="animation-delay:${i * 0.06}s">
+  // Picsum seeds offset per attraction for variety — only used if wiki thumb fails
+  const seeds = [10,20,30,40,50,60,70,80,90,100];
+
+  grid.innerHTML = filtered.map((a, i) => {
+    const imgSrc = a.thumb
+      ? escHtml(a.thumb)
+      : `https://picsum.photos/seed/${seeds[i % seeds.length]}/400/200`;
+
+    return `
+    <div class="attr-card" style="animation-delay:${i * 0.07}s">
       <div class="attr-img-wrap">
-        ${a.thumb
-          ? `<img src="${escHtml(a.thumb)}" alt="${escHtml(a.name)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=attr-img-placeholder>${escHtml(a.emoji)}</div>'">`
-          : `<div class="attr-img-placeholder">${a.emoji}</div>`}
-        <span class="attr-cat-badge">${escHtml(a.category)}</span>
+        <img src="${imgSrc}" alt="${escHtml(a.name)}" loading="lazy"
+          onerror="this.src='https://picsum.photos/seed/${seeds[i % seeds.length] + 1}/400/200'">
+        <span class="attr-cat-badge">${a.emoji} ${escHtml(a.category)}</span>
       </div>
       <div class="attr-body">
-        <div class="attr-name">${a.emoji} ${escHtml(a.name)}</div>
+        <div class="attr-name">${escHtml(a.name)}</div>
         <div class="attr-desc">${escHtml(a.desc)}</div>
         <div class="attr-footer">
           <span class="attr-best-time">⏰ ${escHtml(a.bestTime)}</span>
           <span class="attr-translate-phrase" data-phrase="${escHtml(a.travelPhrase)}">
-            💬 "${escHtml(a.travelPhrase)}"
+            💬 Translate phrase
           </span>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`
+  }).join('');
 
   // Tap travel phrase → pre-fill translate tab
   grid.querySelectorAll('.attr-translate-phrase').forEach(el => {

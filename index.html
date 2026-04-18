@@ -612,6 +612,131 @@ textarea::placeholder { color: var(--dim); }
 
 .save-ctx-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(212,168,83,0.4); }
 
+.mem-del {
+  margin-left: auto; cursor: pointer; color: var(--dim);
+  font-size: 14px; transition: color 0.2s;
+}
+.mem-del:hover { color: var(--danger); }
+
+/* Speak button inside memory cards */
+.mem-speak {
+  display: flex; align-items: center; gap: 4px;
+  padding: 5px 10px; border-radius: 6px;
+  background: var(--gold-dim); border: 1px solid var(--border);
+  font-size: 11px; font-weight: 500; color: var(--gold-light);
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.mem-speak:hover { background: rgba(212,168,83,0.25); }
+.mem-speak.speaking { color: var(--success); border-color: rgba(78,205,196,0.4); }
+
+/* ── Explore Screen ── */
+.explore-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.explore-city {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem; font-weight: 500; color: var(--gold-light);
+  line-height: 1.2;
+}
+.explore-city small { display: block; font-size: 0.75rem; font-family: 'Sora', sans-serif;
+  color: var(--muted); font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; }
+
+.explore-btn {
+  flex-shrink: 0;
+  display: flex; align-items: center; gap: 6px;
+  padding: 9px 16px; border-radius: var(--r-sm);
+  background: linear-gradient(135deg, var(--gold) 0%, var(--amber) 100%);
+  border: none; cursor: pointer;
+  font-family: 'Sora', sans-serif; font-size: 12px; font-weight: 700;
+  color: #1A0D00; letter-spacing: 0.03em;
+  box-shadow: 0 4px 16px rgba(212,168,83,0.35);
+  transition: all 0.2s;
+}
+.explore-btn:hover { transform: translateY(-1px); }
+.explore-btn:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.cat-filter {
+  display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px;
+  scrollbar-width: none;
+}
+.cat-filter::-webkit-scrollbar { display: none; }
+.cat-chip {
+  flex-shrink: 0; padding: 5px 12px; border-radius: 20px;
+  background: var(--card); border: 1px solid var(--border);
+  font-size: 11px; color: var(--muted); cursor: pointer; transition: all 0.2s;
+}
+.cat-chip.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+
+.attractions-grid {
+  display: flex; flex-direction: column; gap: 12px;
+  padding-bottom: 24px;
+}
+
+.attr-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--r); overflow: hidden;
+  animation: slideUp 0.35s ease both;
+  transition: border-color 0.2s;
+}
+.attr-card:hover { border-color: rgba(212,168,83,0.3); }
+
+.attr-img-wrap {
+  width: 100%; height: 160px; overflow: hidden; position: relative;
+  background: var(--deep);
+}
+.attr-img-wrap img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.4s ease;
+}
+.attr-card:hover .attr-img-wrap img { transform: scale(1.04); }
+.attr-img-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px; opacity: 0.35;
+  background: linear-gradient(135deg, var(--panel) 0%, var(--card) 100%);
+}
+.attr-cat-badge {
+  position: absolute; top: 10px; right: 10px;
+  background: rgba(8,9,26,0.82); backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  padding: 3px 8px; border-radius: 20px;
+  font-size: 10px; font-weight: 600; color: var(--gold);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+
+.attr-body { padding: 12px 14px 14px; }
+.attr-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem; font-weight: 500; color: var(--cream);
+  margin-bottom: 5px; line-height: 1.3;
+}
+.attr-desc { font-size: 12px; color: var(--muted); line-height: 1.65; }
+.attr-footer {
+  display: flex; align-items: center; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+}
+.attr-best-time {
+  font-size: 11px; color: var(--gold);
+  background: var(--gold-dim); border: 1px solid var(--border);
+  padding: 3px 8px; border-radius: 4px;
+}
+.attr-translate-phrase {
+  margin-left: auto; font-size: 11px; color: var(--muted);
+  cursor: pointer; display: flex; align-items: center; gap: 4px;
+  padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+.attr-translate-phrase:hover { color: var(--gold); border-color: var(--gold); background: var(--gold-dim); }
+
+.explore-empty {
+  text-align: center; padding: 50px 20px;
+  color: var(--dim); font-size: 14px; line-height: 1.9;
+}
+.explore-empty .e-icon { font-size: 44px; margin-bottom: 14px; opacity: 0.4; display: block; }
+.explore-loading {
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  padding: 50px 20px; color: var(--muted); font-size: 13px;
+}
+
 /* ── API Key Modal ── */
 .modal-overlay {
   position: fixed; inset: 0; z-index: 100;
@@ -1122,6 +1247,36 @@ textarea::placeholder { color: var(--dim); }
     <div style="height:16px"></div>
   </div>
 
+  <!-- EXPLORE -->
+  <div class="screen" id="screen-explore" style="padding:14px 14px 0; gap:12px;">
+    <div class="explore-header">
+      <div>
+        <div class="explore-city">
+          <small>Tourist Attractions</small>
+          <span id="exploreCityName">Set your city in Profile</span>
+        </div>
+      </div>
+      <button class="explore-btn" id="exploreBtn">🗺️ Explore</button>
+    </div>
+    <div class="cat-filter" id="catFilter">
+      <div class="cat-chip active" data-cat="all">All</div>
+      <div class="cat-chip" data-cat="Landmark">🏛 Landmarks</div>
+      <div class="cat-chip" data-cat="Temple">🛕 Temples</div>
+      <div class="cat-chip" data-cat="Museum">🏛 Museums</div>
+      <div class="cat-chip" data-cat="Nature">🌿 Nature</div>
+      <div class="cat-chip" data-cat="Food">🍜 Food</div>
+      <div class="cat-chip" data-cat="Market">🛍 Markets</div>
+      <div class="cat-chip" data-cat="Beach">🏖 Beaches</div>
+      <div class="cat-chip" data-cat="Palace">👑 Palaces</div>
+    </div>
+    <div class="attractions-grid" id="attractionsGrid">
+      <div class="explore-empty">
+        <span class="e-icon">🗺️</span>
+        Set your city in the <b>Profile</b> tab, then tap<br><b>🗺️ Explore</b> to discover top attractions.
+      </div>
+    </div>
+  </div>
+
   <!-- Nav -->
   <nav>
     <div class="nav-item active" data-screen="translate">
@@ -1129,6 +1284,9 @@ textarea::placeholder { color: var(--dim); }
     </div>
     <div class="nav-item" data-screen="memory">
       <span class="nav-icon">🧠</span>Memory
+    </div>
+    <div class="nav-item" data-screen="explore">
+      <span class="nav-icon">🗺️</span>Explore
     </div>
     <div class="nav-item" data-screen="context">
       <span class="nav-icon">🗂️</span>Profile
@@ -1250,6 +1408,8 @@ document.addEventListener('DOMContentLoaded', () => {
   setupContextForm();
   setupOffline();
   setupHowTo();
+  setupExplore();
+  updateExploreCityName();
 });
 
 // ─── API Modal ──────────────────────────────────────────────
@@ -1289,6 +1449,7 @@ function switchScreen(name) {
   document.getElementById('screen-' + name).classList.add('active');
   document.querySelector(`.nav-item[data-screen="${name}"]`).classList.add('active');
   if (name === 'memory') renderMemoryScreen();
+  if (name === 'explore') updateExploreCityName();
 }
 
 // ─── Context Bar ────────────────────────────────────────────
@@ -1714,7 +1875,7 @@ function renderMemoryScreen(filter = '') {
   }
 
   list.innerHTML = items.map((m, i) => `
-    <div class="mem-card" style="animation-delay:${i * 0.05}s">
+    <div class="mem-card" style="animation-delay:${i * 0.05}s" data-id="${m.id}">
       <div class="mem-top">
         <div class="mem-original">${escHtml(m.original)}</div>
         <span class="mem-lang-pill">${escHtml(m.lang)}</span>
@@ -1722,12 +1883,36 @@ function renderMemoryScreen(filter = '') {
       <div class="mem-translation">${escHtml(m.translation)}</div>
       <div class="mem-footer">
         ${m.tags.map(t => `<span class="mem-tag">${t}</span>`).join('')}
-        <span style="margin-left:auto;margin-right:4px">${escHtml(m.date)}</span>
+        <button class="mem-speak" data-text="${escHtml(m.translation)}" data-lang="${escHtml(m.lang)}" title="Speak translation">
+          🔊 Speak
+        </button>
+        <span style="font-size:11px;color:var(--dim)">${escHtml(m.date)}</span>
         <span class="mem-del" data-id="${m.id}" title="Delete">🗑</span>
       </div>
     </div>
   `).join('');
 
+  // Speak buttons in memory
+  list.querySelectorAll('.mem-speak').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const text = btn.dataset.text;
+      const lang = btn.dataset.lang;
+      const code = langToCode(lang);
+      const lang2 = code.split('-')[0];
+      const voices = speechSynthesis.getVoices();
+      let voice = voices.find(v => v.lang.toLowerCase() === code.toLowerCase())
+                || voices.find(v => v.lang.toLowerCase().startsWith(lang2 + '-'));
+      if (!voice) { showToast(`🔇 No "${lang}" voice on device`, 'error'); return; }
+      const utt = new SpeechSynthesisUtterance(text);
+      utt.voice = voice; utt.lang = voice.lang; utt.rate = 0.88;
+      btn.classList.add('speaking'); btn.textContent = '🔊 Speaking…';
+      utt.onend = utt.onerror = () => { btn.classList.remove('speaking'); btn.textContent = '🔊 Speak'; };
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utt);
+    });
+  });
+
+  // Delete buttons
   list.querySelectorAll('.mem-del').forEach(btn => {
     btn.addEventListener('click', () => {
       memory = memory.filter(m => m.id != btn.dataset.id);
@@ -1788,6 +1973,7 @@ function setupContextForm() {
 
     localStorage.setItem('tt_context', JSON.stringify(context));
     renderContextBar();
+    updateExploreCityName();
     showToast('Travel profile saved ✓', 'success');
     switchScreen('translate');
   });
@@ -1878,6 +2064,147 @@ function setupHowTo() {
     if (e.target === document.getElementById('howToModal')) {
       document.getElementById('howToModal').classList.add('hidden');
     }
+  });
+}
+
+// ─── Explore Tab ────────────────────────────────────────────
+let allAttractions = [];
+let activeCat = 'all';
+
+function setupExplore() {
+  document.getElementById('exploreBtn').addEventListener('click', loadAttractions);
+
+  document.querySelectorAll('.cat-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeCat = chip.dataset.cat;
+      renderAttractions();
+    });
+  });
+}
+
+function updateExploreCityName() {
+  const city = context.city || '';
+  document.getElementById('exploreCityName').textContent = city || 'Set your city in Profile';
+}
+
+async function loadAttractions() {
+  const city = context.city || '';
+  if (!city) {
+    showToast('Set your city in Profile first', 'error');
+    switchScreen('context');
+    return;
+  }
+  if (!apiKey) { showApiModal(); return; }
+
+  const btn = document.getElementById('exploreBtn');
+  btn.disabled = true; btn.textContent = '⏳ Loading…';
+
+  document.getElementById('attractionsGrid').innerHTML = `
+    <div class="explore-loading">
+      <div class="dot-loader"><span></span><span></span><span></span></div>
+      <div>Discovering top attractions in <b style="color:var(--gold)">${escHtml(city)}</b>…</div>
+    </div>`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1800,
+        system: `You are a travel guide expert. Return ONLY a valid JSON array — no markdown, no explanation.
+Each object must have exactly these keys:
+  name (string): Exact official name of the attraction (use the name a Wikipedia article would have)
+  category (string): One of: Landmark, Temple, Museum, Nature, Food, Market, Beach, Palace, Park, Fort
+  emoji (string): One relevant emoji
+  desc (string): 1–2 sentence description, vivid and informative, max 120 chars
+  bestTime (string): Best time to visit, max 20 chars
+  wikiSlug (string): Wikipedia article title for this place, URL-encoded if needed (e.g. "Senso-ji" or "Eiffel_Tower")
+  travelPhrase (string): A short English phrase a tourist would say there (e.g. "One ticket please")
+Return exactly 10 attractions.`,
+        messages: [{ role: 'user', content: `Top 10 tourist attractions in ${city}` }]
+      })
+    });
+
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const raw = data.content[0].text.trim().replace(/```json|```/g, '').trim();
+    allAttractions = JSON.parse(raw);
+
+    // Fetch Wikipedia thumbnails in parallel
+    await Promise.all(allAttractions.map(async (a) => {
+      try {
+        const slug = encodeURIComponent(a.wikiSlug.replace(/ /g, '_'));
+        const r = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${slug}`);
+        if (r.ok) {
+          const d = await r.json();
+          a.thumb = d.thumbnail?.source || '';
+        }
+      } catch { a.thumb = ''; }
+    }));
+
+    renderAttractions();
+
+  } catch (e) {
+    document.getElementById('attractionsGrid').innerHTML = `
+      <div class="explore-empty">
+        <span class="e-icon">⚠️</span>
+        Could not load attractions.<br><small style="color:var(--dim)">${escHtml(e.message)}</small>
+      </div>`;
+    showToast('Failed to load attractions', 'error');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '🗺️ Explore';
+  }
+}
+
+function renderAttractions() {
+  const grid = document.getElementById('attractionsGrid');
+  const filtered = activeCat === 'all'
+    ? allAttractions
+    : allAttractions.filter(a => a.category === activeCat);
+
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="explore-empty"><span class="e-icon">🔍</span>No ${activeCat} attractions found.<br>Try a different category.</div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map((a, i) => `
+    <div class="attr-card" style="animation-delay:${i * 0.06}s">
+      <div class="attr-img-wrap">
+        ${a.thumb
+          ? `<img src="${escHtml(a.thumb)}" alt="${escHtml(a.name)}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=attr-img-placeholder>${escHtml(a.emoji)}</div>'">`
+          : `<div class="attr-img-placeholder">${a.emoji}</div>`}
+        <span class="attr-cat-badge">${escHtml(a.category)}</span>
+      </div>
+      <div class="attr-body">
+        <div class="attr-name">${a.emoji} ${escHtml(a.name)}</div>
+        <div class="attr-desc">${escHtml(a.desc)}</div>
+        <div class="attr-footer">
+          <span class="attr-best-time">⏰ ${escHtml(a.bestTime)}</span>
+          <span class="attr-translate-phrase" data-phrase="${escHtml(a.travelPhrase)}">
+            💬 "${escHtml(a.travelPhrase)}"
+          </span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  // Tap travel phrase → pre-fill translate tab
+  grid.querySelectorAll('.attr-translate-phrase').forEach(el => {
+    el.addEventListener('click', () => {
+      document.getElementById('inputText').value = el.dataset.phrase;
+      document.getElementById('charCount').textContent = `${el.dataset.phrase.length}/400`;
+      switchScreen('translate');
+      showToast('Phrase loaded — tap Translate!', 'success');
+    });
   });
 }
 

@@ -1927,21 +1927,57 @@ async function callAI(systemPrompt, userMessage) {
 
   } else {
     // ── Pollinations AI (free, no key) ──
+    // Try POST first, fall back to GET if 404
     const messages = [
       { role: 'system', content: systemPrompt },
       { role: 'user',   content: userMessage  }
     ];
-    const res = await fetch('https://text.pollinations.ai/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        messages,
-        model: 'openai-large',
-        private: true,
-        seed: Math.floor(Math.random() * 9999)
-      })
-    });
-    if (!res.ok) throw new Error(`Free AI error: ${res.status}`);
+
+    // Attempt 1: POST with 'openai' model
+    try {
+      const res = await fetch('https://text.pollinations.ai/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages,
+          model: 'openai',
+          private: true,
+          seed: Math.floor(Math.random() * 9999)
+        })
+      });
+      if (res.ok) {
+        const text = await res.text();
+        if (text && text.trim().length > 0) return text.trim();
+      }
+    } catch {}
+
+    // Attempt 2: POST with 'mistral' model
+    try {
+      const res = await fetch('https://text.pollinations.ai/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages,
+          model: 'mistral',
+          private: true,
+          seed: Math.floor(Math.random() * 9999)
+        })
+      });
+      if (res.ok) {
+        const text = await res.text();
+        if (text && text.trim().length > 0) return text.trim();
+      }
+    } catch {}
+
+    // Attempt 3: GET API (always works, prompt-only, no system)
+    const prompt = encodeURIComponent(
+      `${systemPrompt}\n\nUser message: ${userMessage}\n\nRespond with ONLY the answer, no preamble.`
+    );
+    const res = await fetch(
+      `https://text.pollinations.ai/${prompt}?model=openai&private=true&seed=${Math.floor(Math.random()*9999)}`,
+      { method: 'GET' }
+    );
+    if (!res.ok) throw new Error(`Free AI unavailable (${res.status}). Please add an Anthropic API key.`);
     const text = await res.text();
     return text.trim();
   }
